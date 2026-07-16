@@ -221,7 +221,7 @@
     <nav>
       <a href="#ready">Ready-Made</a>
       <a href="#bundles">Collections</a>
-      <a href="#soon">Coming Soon</a>
+      <a href="#soon" id="soonNavLink">Coming Soon</a>
       <a href="#custom">Custom Orders</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
@@ -235,7 +235,7 @@
       <h2>Custom 3D prints, built to your spec.</h2>
       <p>Dragons, fidgets, gaming gear, and made-to-order creations — printed, finished, and shipped by hand. Pick single-color or go fully custom.</p>
       <div class="hero-stats">
-        <div><div class="num">19</div><div class="lbl">Ready-made designs</div></div>
+        <div><div class="num">39</div><div class="lbl">Ready-made designs</div></div>
         <div><div class="num">12</div><div class="lbl">Curated collections</div></div>
         <div><div class="num">100%</div><div class="lbl">Made to order</div></div>
       </div>
@@ -359,73 +359,121 @@ const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
    here (so the customer sees the right number) and in
    worker.js (so that's actually what they get charged).
    ========================================================= */
+/* =========================================================
+   Simple single/multi-color products
+   ========================================================= */
 const PRODUCTS = [
   { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00,
     images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
-  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:30.00, multi:39.99,
+  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00,
     images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
-  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:34.99, multi:44.99,
+  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00,
     images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
   { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
     images:["images/shadowfang-keychain-2.jpg","images/shadowfang-4.jpg","images/shadowfang-5.jpg","images/shadowfang-dragon-keychain-mini-dragon.jpg"] },
-  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:7.99, multi:10.99,
+  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:4.99, multi:8.99,
     images:["images/tiny-chomp-1.jpg","images/tiny-chomp-keychain.jpg","images/tiny-chomp-keychain-2.jpg"] },
-  { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:45.00, multi:60.00,
+  { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
     images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
-  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:18.99, multi:24.99,
+  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99,
     images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
-  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:24.99, multi:29.99,
+  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99,
     images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
   { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
     images:["images/pikapause-controller-dock-1.jpg","images/pikapause-controller-dock-2.jpg"] },
   { id:"hexarack", name:"HexaRack Gaming Organizer", category:"Gaming", single:59.99, multi:74.99, allowsNote:true,
     images:["images/hexarack-1.jpg","images/hexarack-2.jpg"] },
-  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:12.99, images:[] },
+  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:9.99,
+    images:["images/gyro-sphere-spinner-1.jpg","images/gyro-sphere-spinner-2.jpg","images/gyro-sphere-spinner-3.jpg"] },
   { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:17.99, multi:22.99,
     images:["images/cosmic-star-wand-1.jpg","images/cosmic-star-wand-2.jpg","images/cosmic-star-wand-3.jpg"] },
   { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:27.99, multi:32.99,
     images:["images/retrovault-nintendo-switch-game-case-1.jpg","images/retrovault-switch-game-case-2.jpg","images/retrovault-switch-game-case-3.jpg"] },
-  { id:"sensory-wiggle-ray", name:"Sensory Wiggle Ray", category:"Fidgets", single:16.99, multi:21.99,
-    images:["images/sensory-wiggle-ray-1.jpg","images/sensory-wiggle-ray-2.jpg"] },
-  { id:"orbitcore-fidget", name:"OrbitCore Gear Fidget", category:"Fidgets", single:18.99, multi:24.99, images:[] },
-  { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:34.99,
+  { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
     images:["images/dreamglow-fairy-1.jpg"] },
-  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:39.99, multi:49.99,
+  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:30.00, multi:35.00,
     images:["images/auratwist-1.jpg","images/auratwist-2.jpg"] },
   { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:7.99, multi:12.99,
     images:["images/octospin-1.jpg","images/octospin-3.jpg","images/octospin2.jpg"] },
-  { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:19.99, multi:24.99,
+  { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:14.99, multi:18.99,
     images:["images/infinity-helix-1.jpg","images/infinity-helix-2.jpg"] },
+  { id:"infinity-helixlink", name:"Infinity HelixLink", category:"Fidgets", single:12.99, multi:15.00,
+    images:["images/infinity-helixlink-1.jpg"] },
+  { id:"infinity-twist-passthrough", name:"Infinity Twist Passthrough", category:"Fidgets", single:12.99, multi:16.99,
+    images:["images/infinity-twist-passthrough-2.jpg","images/infinity-twist-passthrough-3.jpg"] },
+  { id:"infinity-cubeshift", name:"Infinity CubeShift", category:"Fidgets", single:9.99, multi:16.99,
+    images:["images/infinity-cubeshift-1.jpg","images/infinity-cubeshift-2.jpg","images/infinity-cubeshift-3.jpg"] },
+  { id:"hyper-wheel", name:"Hyper Wheel", category:"Fidgets", single:14.99, multi:17.99,
+    images:["images/hyper-wheel-1.jpg","images/hyper-wheel-2.jpg","images/hyper-wheel-3.jpg"] },
+  { id:"clickstack", name:"ClickStack", category:"Fidgets", single:8.99, multi:11.99,
+    images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
+  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
+    images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
+  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99,
+    images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
+  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99,
+    images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
+  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99,
+    images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
+  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
+    images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
+  { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
+    images:["images/mndscape-lamp-1.jpg"] },
+  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99,
+    images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
+  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00,
+    images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, images:[] },
+  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00,
+    images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
+  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
+    images:["images/twisty-bao-1.jpg"] },
+  { id:"zenclick", name:"ZenClick", category:"Fidgets", single:12.99, multi:15.99,
+    images:["images/zenclick-orb-1.jpg","images/zenclick-orb-2.jpg"] },
 ];
 
-const CATEGORIES = ["All", ...new Set(PRODUCTS.map(p=>p.category))];
-let activeCategory = "All";
+/* =========================================================
+   Size + color products (Small/Large x Single/Multi = 4 prices)
+   ========================================================= */
+const SIZED_PRODUCTS = [
+  { id:"sensory-wiggle-ray", name:"Sensory Wiggle Ray", category:"Fidgets",
+    images:["images/sensory-wiggle-ray-1.jpg","images/sensory-wiggle-ray-2.jpg"],
+    sizes:{ small:{ single:9.99, multi:14.99 }, large:{ single:15.00, multi:20.99 } } },
+  { id:"orbitcore-fidget", name:"OrbitCore Gear Fidget", category:"Fidgets",
+    images:["images/orbitcore-1.jpg","images/orbitcore-2.jpg","images/orbitcore-3.jpg","images/orbitcore-4.jpg","images/orbitcore-5.jpg"],
+    sizes:{ small:{ single:4.99, multi:8.99 }, large:{ single:8.99, multi:12.99 } } },
+  { id:"chompasaurus", name:"Chompasaurus", category:"Creatures",
+    images:["images/chompasaurus-1.jpg","images/chompasaurus-4.jpg"],
+    sizes:{ small:{ single:7.99, multi:10.99 }, large:{ single:11.99, multi:14.99 } } },
+];
+
+/* =========================================================
+   Fixed single-price items — no color/size choice
+   ========================================================= */
+const SIMPLE_ITEMS = [
+  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99, blurb:"",
+    images:["images/wack-a-mole-1.jpg"] },
+  { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99, blurb:"Comes with three propellers.",
+    images:["images/skyspin-launcher-1.jpg"] },
+];
 
 const BUNDLES = [
-  { id:"dragon-collection", name:"Dragon Collection", blurb:"Pick 3 dragons from the catalog.", price:99.99, images:[] },
-  { id:"hatchling-collection", name:"Hatchling Collection", blurb:"A curated set of smaller dragon pieces.", price:64.99, images:[] },
-  { id:"gaming-collection", name:"Gaming Collection", blurb:"Organizer, dock, and case bundled together.", price:86.99, images:[] },
-  { id:"ultimate-fidget-box", name:"Ultimate Fidget Collection", blurb:"Our best fidget pieces, bundled up.", price:50.00, images:[] },
-  { id:"ocean-collection", name:"Ocean Collection", blurb:"Sea-themed prints in one set.", price:30.00, images:[] },
-  { id:"wizard-collection", name:"Wizard Collection", blurb:"Wands and magical pieces together.", price:49.99, images:[] },
-  { id:"home-collection", name:"Home Collection", blurb:"Lamps and décor for your space.", price:89.99, images:[] },
-  { id:"pocket-collection", name:"Pocket Collection", blurb:"Small, giftable keychain-sized prints.", price:24.99, images:[] },
-  { id:"mystery-fidget-box", name:"Mystery Fidget Box", blurb:"A surprise assortment of fidgets.", price:19.99, images:[] },
-  { id:"mystery-dragon-box", name:"Mystery Dragon Box", blurb:"A surprise dragon-themed piece.", price:59.99, images:[] },
-  { id:"surprise-gamer-box", name:"Surprise Gamer Box", blurb:"A surprise gaming-themed piece.", price:69.99, images:[] },
-  { id:"premium-mystery-box", name:"Premium Mystery Box", blurb:"Our biggest surprise bundle.", price:95.99, images:[] },
+  { id:"dragon-collection", name:"Dragon Collection", blurb:"Pick 3 dragons of your choice.", price:50.00, images:[] },
+  { id:"hatchling-collection", name:"Hatchling Collection", blurb:"1 large dragon, 1 dragon keychain, and a Tiny Chomp keychain.", price:39.99, images:[] },
+  { id:"gaming-collection", name:"Gaming Collection", blurb:"HexaRack and PikaPause, bundled together.", price:86.99, images:[] },
+  { id:"ultimate-fidget-box", name:"Ultimate Fidget Collection", blurb:"OrbitCore, GyroSphere, OctoSpin, and your choice of 1 wand.", price:50.00, images:[] },
+  { id:"ocean-collection", name:"Ocean Collection", blurb:"ShellShift Turtle, Sensory Wiggle Ray, and OctoSpin.", price:30.00, images:[] },
+  { id:"wizard-collection", name:"Wizard Collection", blurb:"Cosmic Star Wand and Infinity Helix Wand.", price:49.99, images:[] },
+  { id:"home-collection", name:"Home Collection", blurb:"1 lamp plus 2 tea light lamps.", price:89.99, images:[] },
+  { id:"pocket-collection", name:"Pocket Collection", blurb:"Tiny Chomp and ShadowFang keychains.", price:24.99, images:[] },
+  { id:"mystery-fidget-box", name:"Mystery Fidget Box", blurb:"3 surprise fidgets.", price:19.99, images:[] },
+  { id:"mystery-dragon-box", name:"Mystery Dragon Box", blurb:"1 surprise dragon, 1 surprise dragon-themed item, 1 surprise accessory.", price:59.99, images:[] },
+  { id:"surprise-gamer-box", name:"Surprise Gamer Box", blurb:"A surprise set of gaming-themed accessories and organizers.", price:69.99, images:[] },
+  { id:"premium-mystery-box", name:"Premium Mystery Box", blurb:"6–9 premium products, surprise selection.", price:95.99, images:[] },
 ];
 
 // Photographed, but not yet priced — display only, not purchasable.
-const COMING_SOON = [
-  { name:"ClickStack", images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
-  { name:"Hyper Wheel", images:["images/hyper-wheel-1.jpg","images/hyper-wheel-2.jpg","images/hyper-wheel-3.jpg"] },
-  { name:"Infinity CubeShift", images:["images/infinity-cubeshift-1.jpg","images/infinity-cubeshift-2.jpg","images/infinity-cubeshift-3.jpg"] },
-  { name:"MagTrick FlipBoard", images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
-  { name:"Paint Pop Lamp", images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
-  { name:"Snapjaw Shark", images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
-  { name:"Stormwing Button Flap Dragon", images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
-];
+const COMING_SOON = [];
 
 const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
   `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23e5e3db'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23928f85' text-anchor='middle'>Photo coming soon</text></svg>`
@@ -433,11 +481,20 @@ const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
 
 const money = n => "$" + n.toFixed(2);
 
+// One combined list drives the catalog grid + category filter.
+const ALL_ITEMS = [
+  ...PRODUCTS.map(p => ({ ...p, type:"variant" })),
+  ...SIZED_PRODUCTS.map(p => ({ ...p, type:"sized" })),
+  ...SIMPLE_ITEMS.map(p => ({ ...p, type:"simple" })),
+];
+const CATEGORIES = ["All", ...new Set(ALL_ITEMS.map(p=>p.category))];
+let activeCategory = "All";
+
 /* ---------- filter bar ---------- */
 function renderFilterBar(){
   const bar = document.getElementById("filterBar");
   bar.innerHTML = CATEGORIES.map(cat => {
-    const count = cat === "All" ? PRODUCTS.length : PRODUCTS.filter(p=>p.category===cat).length;
+    const count = cat === "All" ? ALL_ITEMS.length : ALL_ITEMS.filter(p=>p.category===cat).length;
     return `<button class="filter-chip${cat===activeCategory ? " active":""}" onclick="setCategory('${cat}')">${cat} <span class="count">${count}</span></button>`;
   }).join("");
 }
@@ -450,32 +507,86 @@ function setCategory(cat){
 /* ---------- render product grid ---------- */
 function renderProducts(){
   const grid = document.getElementById("productGrid");
-  const visible = activeCategory === "All" ? PRODUCTS : PRODUCTS.filter(p=>p.category===activeCategory);
+  const visible = activeCategory === "All" ? ALL_ITEMS : ALL_ITEMS.filter(p=>p.category===activeCategory);
   grid.innerHTML = visible.map(p => {
     const img = p.images[0] || PLACEHOLDER_IMG;
-    const noteField = p.allowsNote ? `
-      <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
+
+    if(p.type === "variant"){
+      const noteField = p.allowsNote ? `
+        <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}')">
+              Single Color
+              <span class="price mono">${money(p.single)}</span>
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}')">
+              Multi/Custom
+              <span class="price mono">${money(p.multi)}</span>
+            </label>
+          </div>
+          ${noteField}
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    if(p.type === "sized"){
+      const initialPrice = p.sizes.small.single;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-size="small">
+              <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
+              Small
+            </label>
+            <label class="variant-opt" data-size="large">
+              <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
+              Large
+            </label>
+          </div>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}')">
+              Single Color
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}')">
+              Multi/Custom
+            </label>
+          </div>
+          <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // type === "simple"
     return `
     <div class="card" data-id="${p.id}">
       <img src="${img}" alt="${p.name}" loading="lazy">
       <div class="card-body">
         <h3>${p.name}</h3>
-        <div class="variant-row">
-          <label class="variant-opt selected" data-variant="single">
-            <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}')">
-            Single Color
-            <span class="price mono">${money(p.single)}</span>
-          </label>
-          <label class="variant-opt" data-variant="multi">
-            <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}')">
-            Multi/Custom
-            <span class="price mono">${money(p.multi)}</span>
-          </label>
-        </div>
-        ${noteField}
+        ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
+        <div class="bundle-price mono">${money(p.price)}</div>
         <div class="card-foot">
           <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
+          <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
         </div>
       </div>
     </div>`;
@@ -487,6 +598,17 @@ function onVariantChange(id){
   card.querySelectorAll(".variant-opt").forEach(el=>{
     el.classList.toggle("selected", el.querySelector("input").checked);
   });
+}
+
+function onSizedChange(id){
+  const p = SIZED_PRODUCTS.find(x=>x.id===id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  card.querySelectorAll(".variant-opt").forEach(el=>{
+    el.classList.toggle("selected", el.querySelector("input").checked);
+  });
+  const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
+  const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
+  document.getElementById(`price-${id}`).textContent = money(p.sizes[size][variant]);
 }
 
 function renderBundles(){
@@ -507,6 +629,13 @@ function renderBundles(){
 }
 
 function renderComingSoon(){
+  const section = document.getElementById("soon");
+  const navLink = document.getElementById("soonNavLink");
+  if(COMING_SOON.length === 0){
+    if(section) section.style.display = "none";
+    if(navLink) navLink.style.display = "none";
+    return;
+  }
   const grid = document.getElementById("soonGrid");
   grid.innerHTML = COMING_SOON.map(item => `
     <div class="card coming-soon-card">
@@ -531,8 +660,37 @@ function addProductToCart(id){
   cart.push({
     id, kind:"product", name:p.name,
     variantLabel: variant === "multi" ? "Multi/Custom" : "Single Color",
-    variant, note, unitPrice, qty,
+    variant, size:null, note, unitPrice, qty,
     image: p.images[0] || PLACEHOLDER_IMG,
+  });
+  flashAdded(id);
+  renderCart();
+}
+
+function addSizedToCart(id){
+  const p = SIZED_PRODUCTS.find(x=>x.id===id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
+  const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
+  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  const unitPrice = p.sizes[size][variant];
+
+  cart.push({
+    id, kind:"sized", name:p.name,
+    variantLabel: `${size === "large" ? "Large" : "Small"} · ${variant === "multi" ? "Multi/Custom" : "Single Color"}`,
+    variant, size, note:"", unitPrice, qty,
+    image: p.images[0] || PLACEHOLDER_IMG,
+  });
+  flashAdded(id);
+  renderCart();
+}
+
+function addSimpleToCart(id){
+  const p = SIMPLE_ITEMS.find(x=>x.id===id);
+  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  cart.push({
+    id, kind:"simple", name:p.name, variantLabel:"", variant:null, size:null, note:"",
+    unitPrice:p.price, qty, image:p.images[0] || PLACEHOLDER_IMG,
   });
   flashAdded(id);
   renderCart();
@@ -542,7 +700,7 @@ function addBundleToCart(id){
   const b = BUNDLES.find(x=>x.id===id);
   const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
   cart.push({
-    id, kind:"bundle", name:b.name, variantLabel:"", variant:null, note:"",
+    id, kind:"bundle", name:b.name, variantLabel:"", variant:null, size:null, note:"",
     unitPrice:b.price, qty, image:b.images[0] || PLACEHOLDER_IMG,
   });
   renderCart();
@@ -604,12 +762,14 @@ async function checkout(){
   btn.disabled = true;
   btn.textContent = "Contacting Square…";
 
-  // NOTE: we only ever send id/variant/qty/note — never a price.
+  // NOTE: we only ever send id/kind/variant/size/qty/note — never a price.
   // The real price is looked up server-side from worker.js's CATALOG.
   const payload = {
     cart: cart.map(item => ({
       id: item.id,
-      variant: item.variant,
+      kind: item.kind,
+      variant: item.variant || undefined,
+      size: item.size || undefined,
       qty: item.qty,
       note: item.note || undefined,
     })),
