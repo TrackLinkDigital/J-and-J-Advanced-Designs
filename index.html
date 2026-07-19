@@ -132,6 +132,7 @@
   .card:hover img{ transform:scale(1.05); }
   .card-body{ padding:16px 16px 18px; display:flex; flex-direction:column; gap:10px; flex:1; }
   .card h3{ font-size:1.05rem; }
+  .item-desc{ color:var(--ink-soft); font-size:.82rem; line-height:1.45; margin:0; }
   .variant-row{ display:flex; gap:8px; flex-wrap:wrap; }
   .variant-opt{
     flex:1; min-width:110px; border:1.5px solid var(--line); border-radius:8px;
@@ -145,6 +146,27 @@
     width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px;
     font-family:'Inter',sans-serif; font-size:.85rem;
   }
+
+  .color-strip-wrap{ margin-top:2px; }
+  .color-strip{
+    display:flex; gap:9px; overflow-x:auto; padding:5px 2px 9px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:thin;
+  }
+  .swatch{
+    width:28px; height:28px; min-width:28px; border-radius:50%; border:2px solid var(--line);
+    cursor:pointer; padding:0; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .swatch:hover{ transform:scale(1.12); }
+  .swatch.selected{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--teal); }
+  .swatch.selected.accent{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--amber); }
+  .color-selected-label{ font-size:.78rem; color:var(--ink-soft); }
+  .finish-row{ display:flex; gap:6px; margin-top:6px; }
+  .finish-chip{
+    border:1.5px solid var(--line); background:var(--panel); border-radius:999px;
+    padding:4px 11px; font-size:.74rem; font-weight:500; cursor:pointer; color:var(--ink-soft);
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .finish-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
   .card-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; gap:10px; }
   .qty-input{ width:52px; padding:8px; border:1px solid var(--line); border-radius:8px; text-align:center; }
   .add-btn{ flex:1; }
@@ -251,6 +273,8 @@
     section{ padding:36px 16px; }
     .section-head h2{ font-size:1.5rem; }
     .filter-bar{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
+    .swatch{ width:24px; height:24px; min-width:24px; }
+    .color-selected-label{ font-size:.72rem; }
   }
 </style>
 </head>
@@ -425,71 +449,105 @@ const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
    ========================================================= */
 const PRODUCTS = [
   { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00,
+    desc:"A fully articulated snake that slithers and coils just like the real thing.",
     images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
   { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00,
+    desc:"A brooding dragon with sharp spines and a fierce stare.",
     images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
   { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00,
+    desc:"Scales that shimmer and shift color with every angle of light.",
     images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
   { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
+    desc:"A pocket-sized dragon to carry on your keys or backpack.",
     images:["images/shadowfang-keychain-2.jpg","images/shadowfang-4.jpg","images/shadowfang-5.jpg","images/shadowfang-dragon-keychain-mini-dragon.jpg"] },
   { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:4.99, multi:8.99,
+    desc:"A tiny T-Rex with a big bite, perfect for keys and bags.",
     images:["images/tiny-chomp-1.jpg","images/tiny-chomp-keychain.jpg","images/tiny-chomp-keychain-2.jpg"] },
   { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
+    desc:"A dragon-shaped lamp that stands watch over your desk or shelf.",
     images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
   { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99,
+    desc:"A slow-and-steady turtle with a surprisingly satisfying shell.",
     images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
   { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99,
+    desc:"A dragon egg that opens to reveal the hatchling hidden inside.",
     images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
   { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
+    desc:"A sturdy charging dock that keeps your controller ready to grab.",
     images:["images/pikapause-controller-dock-1.jpg","images/pikapause-controller-dock-2.jpg"] },
   { id:"hexarack", name:"HexaRack Gaming Organizer", category:"Gaming", single:59.99, multi:74.99, allowsNote:true,
+    desc:"Keep every game and controller organized in one hexagonal rack.",
     images:["images/hexarack-1.jpg","images/hexarack-2.jpg"] },
   { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:9.99,
+    desc:"A smooth spinning sphere built for quiet, satisfying fidgeting.",
     images:["images/gyro-sphere-spinner-1.jpg","images/gyro-sphere-spinner-2.jpg","images/gyro-sphere-spinner-3.jpg"] },
   { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:17.99, multi:22.99,
+    desc:"A large star-tipped wand for anyone who wants a little magic in hand.",
     images:["images/cosmic-star-wand-1.jpg","images/cosmic-star-wand-2.jpg","images/cosmic-star-wand-3.jpg"] },
   { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:27.99, multi:32.99,
+    desc:"A snug, protective case that keeps your game cards safe on the go.",
     images:["images/retrovault-nintendo-switch-game-case-1.jpg","images/retrovault-switch-game-case-2.jpg","images/retrovault-switch-game-case-3.jpg"] },
   { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
+    desc:"A soft-glowing fairy lamp for a calm, whimsical nightlight.",
     images:["images/dreamglow-fairy-1.jpg"] },
   { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:30.00, multi:35.00,
+    desc:"A twisting LED lamp that throws color across the room.",
     images:["images/auratwist-1.jpg","images/auratwist-2.jpg"] },
   { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:7.99, multi:12.99,
+    desc:"A ring-shaped fidget with eight points to spin between your fingers.",
     images:["images/octospin-1.jpg","images/octospin-3.jpg","images/octospin2.jpg"] },
   { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:14.99, multi:18.99,
+    desc:"A wand with an endless, twisting helix design.",
     images:["images/infinity-helix-1.jpg","images/infinity-helix-2.jpg"] },
   { id:"infinity-helixlink", name:"Infinity HelixLink", category:"Fidgets", single:12.99, multi:15.00,
+    desc:"An interlocking chain fidget that twists and links endlessly.",
     images:["images/infinity-helixlink-1.jpg"] },
   { id:"infinity-twist-passthrough", name:"Infinity Twist Passthrough", category:"Fidgets", single:12.99, multi:16.99,
+    desc:"A twisting fidget puzzle that flows smoothly from end to end.",
     images:["images/infinity-twist-passthrough-2.jpg","images/infinity-twist-passthrough-3.jpg"] },
   { id:"infinity-cubeshift", name:"Infinity CubeShift", category:"Fidgets", single:9.99, multi:16.99,
+    desc:"A shape-shifting cube fidget that never sits still.",
     images:["images/infinity-cubeshift-1.jpg","images/infinity-cubeshift-2.jpg","images/infinity-cubeshift-3.jpg"] },
   { id:"hyper-wheel", name:"Hyper Wheel", category:"Fidgets", single:14.99, multi:17.99,
+    desc:"A fast-spinning wheel fidget built for restless hands.",
     images:["images/hyper-wheel-1.jpg","images/hyper-wheel-2.jpg","images/hyper-wheel-3.jpg"] },
   { id:"clickstack", name:"ClickStack", category:"Fidgets", single:8.99, multi:11.99,
+    desc:"A stack of clicky pieces made for satisfying, repetitive fidgeting.",
     images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
   { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
+    desc:"A flipping magnetic fidget with a satisfying snap.",
     images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
   { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99,
+    desc:"A sleek, winged dragon built for speed.",
     images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
   { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99,
+    desc:"A dragon with dramatic wings that fold and fan open.",
     images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
   { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99,
+    desc:"A snapping shark jaw fidget that's all bite.",
     images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
   { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
+    desc:"A playful paint-splatter lamp that adds a pop of color to any room.",
     images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
   { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
+    desc:"An abstract, sculptural lamp that doubles as a conversation piece.",
     images:["images/mndscape-lamp-1.jpg"] },
   { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99,
+    desc:"A dragon wreathed in dark, flame-like detailing.",
     images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
   { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00,
+    desc:"A storm-toughened dragon with rugged, weathered scales.",
     images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
-  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, images:[] },
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00,
+    desc:"A dragon lined with venomous spines down its back.", images:[] },
   { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00,
+    desc:"A fiery dragon that looks ready to breathe flame.",
     images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
   { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
+    desc:"A soft, squeezable bao-shaped fidget you can twist apart and back together.",
     images:["images/twisty-bao-1.jpg"] },
   { id:"zenclick", name:"ZenClick", category:"Fidgets", single:12.99, multi:15.99,
+    desc:"A smooth clicking orb designed for calm, repetitive fidgeting.",
     images:["images/zenclick-orb-1.jpg","images/zenclick-orb-2.jpg"] },
 ];
 
@@ -498,12 +556,15 @@ const PRODUCTS = [
    ========================================================= */
 const SIZED_PRODUCTS = [
   { id:"sensory-wiggle-ray", name:"Sensory Wiggle Ray", category:"Fidgets",
+    desc:"A wiggly stingray fidget with a satisfying sensory swim motion.",
     images:["images/sensory-wiggle-ray-1.jpg","images/sensory-wiggle-ray-2.jpg"],
     sizes:{ small:{ single:9.99, multi:14.99 }, large:{ single:15.00, multi:20.99 } } },
   { id:"orbitcore-fidget", name:"OrbitCore Gear Fidget", category:"Fidgets",
+    desc:"A geared, rotating fidget that's oddly mesmerizing to spin.",
     images:["images/orbitcore-1.jpg","images/orbitcore-2.jpg","images/orbitcore-3.jpg","images/orbitcore-4.jpg","images/orbitcore-5.jpg"],
     sizes:{ small:{ single:4.99, multi:8.99 }, large:{ single:8.99, multi:12.99 } } },
   { id:"chompasaurus", name:"Chompasaurus", category:"Creatures",
+    desc:"A chomping dino fidget with a jaw that snaps shut.",
     images:["images/chompasaurus-1.jpg","images/chompasaurus-4.jpg"],
     sizes:{ small:{ single:7.99, multi:10.99 }, large:{ single:11.99, multi:14.99 } } },
 ];
@@ -512,27 +573,42 @@ const SIZED_PRODUCTS = [
    Fixed single-price items — no color/size choice
    ========================================================= */
 const SIMPLE_ITEMS = [
-  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99, blurb:"",
+  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99,
+    desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
     images:["images/wack-a-mole-1.jpg"] },
-  { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99, blurb:"Comes with three propellers.",
+  { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99,
+    desc:"A hand-launched spinner that takes flight with three propellers.",
+    blurb:"Comes with three propellers.",
     images:["images/skyspin-launcher-1.jpg"] },
 ];
 
 const BUNDLES = [
-  { id:"dragon-collection", name:"Dragon Collection", blurb:"Pick 3 dragons of your choice.", price:50.00, images:[],
+  { id:"dragon-collection", name:"Dragon Collection", blurb:"Pick 3 dragons of your choice.", price:50.00,
+    images:["images/prismscale-dragon-1.jpg"],
     picks:{ count:3, label:"Pick 3 dragons", options:["shadowthorn-dragon","prismscale-dragon","scaleshift-egg","skyfang","stormwing","shadowflame-dragon","stormscale-dragon","venomspine-dragon","inferno-dragon"] } },
-  { id:"hatchling-collection", name:"Hatchling Collection", blurb:"1 large dragon, 1 dragon keychain, and a Tiny Chomp keychain.", price:39.99, images:[] },
-  { id:"gaming-collection", name:"Gaming Collection", blurb:"HexaRack and PikaPause, bundled together.", price:86.99, images:[] },
-  { id:"ultimate-fidget-box", name:"Ultimate Fidget Collection", blurb:"OrbitCore, GyroSphere, OctoSpin, and your choice of 1 wand.", price:50.00, images:[],
+  { id:"hatchling-collection", name:"Hatchling Collection", blurb:"1 large dragon, 1 dragon keychain, and a Tiny Chomp keychain.", price:39.99,
+    images:["images/scaleshift-dragon-egg-1.jpg"] },
+  { id:"gaming-collection", name:"Gaming Collection", blurb:"HexaRack and PikaPause, bundled together.", price:86.99,
+    images:["images/hexarack-1.jpg"] },
+  { id:"ultimate-fidget-box", name:"Ultimate Fidget Collection", blurb:"OrbitCore, GyroSphere, OctoSpin, and your choice of 1 wand.", price:50.00,
+    images:["images/octospin-1.jpg"],
     picks:{ count:1, label:"Pick 1 wand", options:["cosmic-star-wand","infinity-helix-wand"] } },
-  { id:"ocean-collection", name:"Ocean Collection", blurb:"ShellShift Turtle, Sensory Wiggle Ray, and OctoSpin.", price:30.00, images:[] },
-  { id:"wizard-collection", name:"Wizard Collection", blurb:"Cosmic Star Wand and Infinity Helix Wand.", price:49.99, images:[] },
-  { id:"home-collection", name:"Home Collection", blurb:"1 lamp plus 2 tea light lamps.", price:89.99, images:[] },
-  { id:"pocket-collection", name:"Pocket Collection", blurb:"Tiny Chomp and ShadowFang keychains.", price:24.99, images:[] },
-  { id:"mystery-fidget-box", name:"Mystery Fidget Box", blurb:"3 surprise fidgets.", price:19.99, images:[] },
-  { id:"mystery-dragon-box", name:"Mystery Dragon Box", blurb:"1 surprise dragon, 1 surprise dragon-themed item, 1 surprise accessory.", price:59.99, images:[] },
-  { id:"surprise-gamer-box", name:"Surprise Gamer Box", blurb:"A surprise set of gaming-themed accessories and organizers.", price:69.99, images:[] },
-  { id:"premium-mystery-box", name:"Premium Mystery Box", blurb:"6–9 premium products, surprise selection.", price:95.99, images:[] },
+  { id:"ocean-collection", name:"Ocean Collection", blurb:"ShellShift Turtle, Sensory Wiggle Ray, and OctoSpin.", price:30.00,
+    images:["images/shellshift-turtle-1.jpg"] },
+  { id:"wizard-collection", name:"Wizard Collection", blurb:"Cosmic Star Wand and Infinity Helix Wand.", price:49.99,
+    images:["images/cosmic-star-wand-1.jpg"] },
+  { id:"home-collection", name:"Home Collection", blurb:"1 lamp plus 2 tea light lamps.", price:89.99,
+    images:["images/gaurdian-dragon-lamp-1.jpg"] },
+  { id:"pocket-collection", name:"Pocket Collection", blurb:"Tiny Chomp and ShadowFang keychains.", price:24.99,
+    images:["images/tiny-chomp-1.jpg"] },
+  { id:"mystery-fidget-box", name:"Mystery Fidget Box", blurb:"3 surprise fidgets.", price:19.99,
+    images:["images/gyro-sphere-spinner-1.jpg"] },
+  { id:"mystery-dragon-box", name:"Mystery Dragon Box", blurb:"1 surprise dragon, 1 surprise dragon-themed item, 1 surprise accessory.", price:59.99,
+    images:["images/shadowflame-dragon-1.jpg"] },
+  { id:"surprise-gamer-box", name:"Surprise Gamer Box", blurb:"A surprise set of gaming-themed accessories and organizers.", price:69.99,
+    images:["images/retrovault-nintendo-switch-game-case-1.jpg"] },
+  { id:"premium-mystery-box", name:"Premium Mystery Box", blurb:"6–9 premium products, surprise selection.", price:95.99,
+    images:["images/auratwist-1.jpg"] },
 ];
 
 // Photographed, but not yet priced — display only, not purchasable.
@@ -543,6 +619,170 @@ const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
 );
 
 const money = n => "$" + n.toFixed(2);
+
+/* =========================================================
+   COLOR PALETTE — from actual supplier stock.
+   needsFinish:true = solid PLA available in Matte/Silk/Basic (customer picks finish).
+   Multi-color blends, glow, and crystal/translucent are their own fixed
+   filament type — no separate finish choice for those.
+   ========================================================= */
+const COLORS = [
+  // Solid PLA — available in Matte / Silk / Basic
+  { id:"red",           name:"Red",           hex:"#d1362f", needsFinish:true },
+  { id:"cyan",          name:"Cyan",          hex:"#3fc6d4", needsFinish:true },
+  { id:"navy-blue",     name:"Navy Blue",     hex:"#16244f", needsFinish:true },
+  { id:"basic-blue",    name:"Basic Blue",    hex:"#1f5fd6", needsFinish:true },
+  { id:"orange",        name:"Orange",        hex:"#e8792a", needsFinish:true },
+  { id:"yellow",        name:"Yellow",        hex:"#f2d43c", needsFinish:true },
+  { id:"banana-yellow", name:"Banana Yellow", hex:"#f0d868", needsFinish:true },
+  { id:"magenta",       name:"Magenta",       hex:"#c2276f", needsFinish:true },
+  { id:"light-pink",    name:"Light Pink",    hex:"#f5b8d0", needsFinish:true },
+  { id:"grey",          name:"Grey",          hex:"#8a8d91", needsFinish:true },
+  { id:"bright-green",  name:"Bright Green",  hex:"#4fd12a", needsFinish:true },
+  { id:"light-green",   name:"Light Green",   hex:"#a8e07a", needsFinish:true },
+  { id:"basic-green",   name:"Basic Green",   hex:"#1f7a33", needsFinish:true },
+  { id:"purple",        name:"Purple",        hex:"#6a3fb5", needsFinish:true },
+  { id:"cosmic-blue",   name:"Cosmic Blue",   hex:"#1a2f6b", needsFinish:true },
+  // Glow in the dark
+  { id:"glow-rainbow", name:"Rainbow Glow", gradient:"linear-gradient(90deg,#ff5252,#ffb347,#fff176,#69f0ae,#4fc3f7,#b388ff)" },
+  { id:"glow-blue",    name:"Blue Glow",    hex:"#4fa8e0" },
+  { id:"glow-green",   name:"Green Glow",   hex:"#7ee85a" },
+  { id:"glow-red",     name:"Red Glow",     hex:"#e8453a" },
+  { id:"glow-purple",  name:"Purple Glow",  hex:"#8a4fd1" },
+  // Triple-color silk transition blends
+  { id:"blend-blue-cyan-purple",  name:"Blue/Cyan/Purple Blend",  gradient:"linear-gradient(90deg,#1f5fd6,#3fc6d4,#6a3fb5)" },
+  { id:"blend-pink-purple-blue",  name:"Pink/Purple/Blue Blend",  gradient:"linear-gradient(90deg,#c2276f,#6a3fb5,#1f5fd6)" },
+  { id:"blend-green-orange-gold", name:"Green/Orange/Gold Blend", gradient:"linear-gradient(90deg,#2f8f3f,#e8792a,#c9a227)" },
+  { id:"blend-green-blue-purple", name:"Green/Blue/Purple Blend", gradient:"linear-gradient(90deg,#2f8f3f,#1f5fd6,#6a3fb5)" },
+  // Four-color silk blends
+  { id:"galaxy-purple", name:"Galaxy Purple", gradient:"linear-gradient(90deg,#6a3fb5,#3f5fd6,#c2276f,#b8bcc2)" },
+  { id:"cotton-candy",  name:"Cotton Candy",  gradient:"linear-gradient(90deg,#f5b8d0,#f7d0e0,#4fa8e0,#8a4fd1)" },
+  { id:"mermaid",       name:"Mermaid",       gradient:"linear-gradient(90deg,#1f5fd6,#3fd0c8,#2f8f3f,#6a3fb5)" },
+  { id:"sunset-gold",   name:"Sunset Gold",   gradient:"linear-gradient(90deg,#c9a227,#e8792a,#f5b8d0,#8a4fd1)" },
+  // Translucent / crystal
+  { id:"crystal-purple", name:"Crystal Purple", hex:"#b9a6e0" },
+  { id:"crystal-blue",   name:"Crystal Blue",   hex:"#a8d0e8" },
+  { id:"crystal-teal",   name:"Crystal Teal",   hex:"#a0e0d8" },
+  { id:"crystal-clear",  name:"Crystal Clear",  hex:"#eef2f2" },
+  { id:"crystal-pink",   name:"Crystal Pink",   hex:"#f0c8d8" },
+];
+
+const FINISHES = [
+  { id:"basic", name:"Basic PLA" },
+  { id:"silk",  name:"Silk" },
+  { id:"matte", name:"Matte" },
+];
+
+// productId -> array of selected color ids (order matters: [0]=primary, [1]=accent)
+let colorSelections = {};
+// productId -> chosen finish id (only meaningful when a needsFinish color is selected)
+let finishSelections = {};
+
+function getColorMax(id){
+  const input = document.querySelector(`input[name="variant-${id}"]:checked`);
+  const variant = input ? input.value : "single";
+  return variant === "multi" ? 2 : 1;
+}
+
+function colorStripHtml(id){
+  return `
+    <div class="color-strip-wrap">
+      <div class="color-strip" id="colorstrip-${id}">
+        ${COLORS.map(c => `
+          <button type="button" class="swatch" data-color="${c.id}" style="background:${c.gradient || c.hex}"
+            title="${c.name}" onclick="toggleColor('${id}','${c.id}')" aria-label="${c.name}"></button>
+        `).join("")}
+      </div>
+      <div class="color-selected-label" id="colorlabel-${id}">Choose a color</div>
+      <div class="finish-row" id="finishrow-${id}" style="display:none;">
+        ${FINISHES.map(f => `
+          <button type="button" class="finish-chip" data-finish="${f.id}" onclick="setFinish('${id}','${f.id}')">${f.name}</button>
+        `).join("")}
+      </div>
+    </div>`;
+}
+
+function resetColorSelection(id){
+  colorSelections[id] = [];
+  finishSelections[id] = "basic";
+  updateColorUI(id);
+}
+
+function toggleColor(id, colorId){
+  const max = getColorMax(id);
+  let sel = colorSelections[id] || [];
+  const idx = sel.indexOf(colorId);
+  if(idx !== -1){
+    sel.splice(idx,1);
+  } else {
+    if(sel.length >= max) sel.shift(); // drop oldest to make room (FIFO)
+    sel.push(colorId);
+  }
+  colorSelections[id] = sel;
+  updateColorUI(id);
+}
+
+function setFinish(id, finishId){
+  finishSelections[id] = finishId;
+  updateColorUI(id);
+}
+
+function updateColorUI(id){
+  const sel = colorSelections[id] || [];
+  const strip = document.getElementById(`colorstrip-${id}`);
+  if(!strip) return;
+  strip.querySelectorAll(".swatch").forEach(btn=>{
+    const cid = btn.dataset.color;
+    const idx = sel.indexOf(cid);
+    btn.classList.toggle("selected", idx !== -1);
+    btn.classList.toggle("accent", idx === 1);
+  });
+
+  const label = document.getElementById(`colorlabel-${id}`);
+  const max = getColorMax(id);
+  if(label){
+    if(sel.length === 0){
+      label.textContent = max === 2 ? "Choose 2 colors" : "Choose a color";
+    } else {
+      const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+      label.textContent = max === 2
+        ? `Primary: ${names[0]}${names[1] ? " · Accent: " + names[1] : " · pick 1 more"}`
+        : `Color: ${names[0]}`;
+    }
+  }
+
+  // Finish row only matters/shows when a selected color is solid PLA.
+  const needsFinish = sel.some(cid => {
+    const c = COLORS.find(x=>x.id===cid);
+    return c && c.needsFinish;
+  });
+  const finishRow = document.getElementById(`finishrow-${id}`);
+  if(finishRow){
+    finishRow.style.display = needsFinish ? "flex" : "none";
+    const current = finishSelections[id] || "basic";
+    finishRow.querySelectorAll(".finish-chip").forEach(chip=>{
+      chip.classList.toggle("active", chip.dataset.finish === current);
+    });
+  }
+
+  const btn = document.querySelector(`.card[data-id="${id}"] .add-btn`);
+  if(btn) btn.disabled = sel.length !== max;
+}
+
+function colorNoteText(id){
+  const sel = colorSelections[id] || [];
+  const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+  let base = names.length === 2 ? `Primary ${names[0]}, Accent ${names[1]}` : `Color ${names[0] || "?"}`;
+  const needsFinish = sel.some(cid => {
+    const c = COLORS.find(x=>x.id===cid);
+    return c && c.needsFinish;
+  });
+  if(needsFinish){
+    const finishName = FINISHES.find(f=>f.id===(finishSelections[id]||"basic")).name;
+    base += `, Finish ${finishName}`;
+  }
+  return base;
+}
 
 // One combined list drives the catalog grid + category filter.
 const ALL_ITEMS = [
@@ -583,18 +823,20 @@ function renderProducts(){
         <img src="${img}" alt="${p.name}" loading="lazy">
         <div class="card-body">
           <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
           <div class="variant-row">
             <label class="variant-opt selected" data-variant="single">
-              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}')">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
               Single Color
               <span class="price mono">${money(p.single)}</span>
             </label>
             <label class="variant-opt" data-variant="multi">
-              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}')">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
               Multi/Custom
               <span class="price mono">${money(p.multi)}</span>
             </label>
           </div>
+          ${colorStripHtml(p.id)}
           ${noteField}
           <div class="card-foot">
             <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
@@ -611,6 +853,7 @@ function renderProducts(){
         <img src="${img}" alt="${p.name}" loading="lazy">
         <div class="card-body">
           <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
           <div class="variant-row">
             <label class="variant-opt selected" data-size="small">
               <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
@@ -623,14 +866,15 @@ function renderProducts(){
           </div>
           <div class="variant-row">
             <label class="variant-opt selected" data-variant="single">
-              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}')">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
               Single Color
             </label>
             <label class="variant-opt" data-variant="multi">
-              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}')">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
               Multi/Custom
             </label>
           </div>
+          ${colorStripHtml(p.id)}
           <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
           <div class="card-foot">
             <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
@@ -646,6 +890,7 @@ function renderProducts(){
       <img src="${img}" alt="${p.name}" loading="lazy">
       <div class="card-body">
         <h3>${p.name}</h3>
+        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
         ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
         <div class="bundle-price mono">${money(p.price)}</div>
         <div class="card-foot">
@@ -655,6 +900,11 @@ function renderProducts(){
       </div>
     </div>`;
   }).join("");
+
+  // Initialize color-picker state (and disabled Add button) for every card that has one.
+  visible.forEach(p=>{
+    if(p.type === "variant" || p.type === "sized") resetColorSelection(p.id);
+  });
 }
 
 function onVariantChange(id){
@@ -722,14 +972,18 @@ function addProductToCart(id){
   const card = document.querySelector(`.card[data-id="${id}"]`);
   const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
   const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  const max = getColorMax(id);
+  if((colorSelections[id]||[]).length !== max) return; // guard; button should already prevent this
+  const colorText = colorNoteText(id);
   const noteEl = document.getElementById(`note-${id}`);
-  const note = noteEl ? noteEl.value.trim().slice(0,40) : "";
+  const customNote = noteEl ? noteEl.value.trim().slice(0,40) : "";
+  const fullNote = customNote ? `${colorText} - ${customNote}` : colorText;
   const unitPrice = variant === "multi" ? p.multi : p.single;
 
   cart.push({
     id, kind:"product", name:p.name,
     variantLabel: variant === "multi" ? "Multi/Custom" : "Single Color",
-    variant, size:null, note, unitPrice, qty,
+    variant, size:null, note:fullNote, unitPrice, qty,
     image: p.images[0] || PLACEHOLDER_IMG,
   });
   flashAdded(id);
@@ -742,12 +996,14 @@ function addSizedToCart(id){
   const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
   const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
   const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  const max = getColorMax(id);
+  if((colorSelections[id]||[]).length !== max) return; // guard; button should already prevent this
   const unitPrice = p.sizes[size][variant];
 
   cart.push({
     id, kind:"sized", name:p.name,
     variantLabel: `${size === "large" ? "Large" : "Small"} · ${variant === "multi" ? "Multi/Custom" : "Single Color"}`,
-    variant, size, note:"", unitPrice, qty,
+    variant, size, note: colorNoteText(id), unitPrice, qty,
     image: p.images[0] || PLACEHOLDER_IMG,
   });
   flashAdded(id);
