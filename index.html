@@ -159,6 +159,8 @@
   .swatch:hover{ transform:scale(1.12); }
   .swatch.selected{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--teal); }
   .swatch.selected.accent{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--amber); }
+  .swatch.selected.third{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--danger); }
+  .swatch.selected.fourth{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--ink); }
   .color-selected-label{ font-size:.78rem; color:var(--ink-soft); }
   .finish-row{ display:flex; gap:6px; margin-top:6px; }
   .finish-chip{
@@ -229,6 +231,25 @@
   .checkout-status{ font-size:.85rem; margin-top:10px; text-align:center; }
   .checkout-status.error{ color:var(--danger); }
 
+  #floatingCartBtn{
+    position:fixed; bottom:22px; right:22px; z-index:35;
+    background:var(--teal); color:#fff; border:none; border-radius:999px;
+    width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 24px rgba(20,20,20,.28); cursor:pointer; font-size:1.3rem;
+    opacity:0; visibility:hidden; transform:translateY(12px);
+    transition:opacity .25s ease, transform .25s ease, visibility .25s ease, background .2s ease;
+  }
+  #floatingCartBtn.visible{ opacity:1; visibility:visible; transform:translateY(0); }
+  #floatingCartBtn:hover{ background:var(--teal-deep); }
+  .fc-count{
+    position:absolute; top:-4px; right:-4px; background:var(--ink); color:#fff;
+    border-radius:999px; font-size:.68rem; font-weight:600; padding:2px 6px; min-width:18px;
+    text-align:center; font-family:'JetBrains Mono',monospace;
+  }
+  @media (max-width:520px){
+    #floatingCartBtn{ width:52px; height:52px; bottom:16px; right:16px; }
+  }
+
   /* Bundle picker modal */
   #pickerOverlay{
     position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:50;
@@ -254,6 +275,12 @@
   .picker-option.disabled{ opacity:.4; cursor:not-allowed; }
   .picker-foot{ padding:16px 20px 20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line); margin-top:8px; }
   #closePicker{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
+
+  .picker-color-section{ padding:2px 20px 4px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; max-height:220px; }
+  .picker-color-item{ border-top:1px solid var(--line); padding-top:10px; }
+  .picker-color-item .picker-color-name{ font-size:.85rem; font-weight:600; margin-bottom:4px; }
+  .picker-color-item .color-strip{ padding:2px 2px 4px; }
+  .picker-color-item .swatch{ width:22px; height:22px; min-width:22px; }
 
   @media (max-width:820px){
     .hero{ grid-template-columns:1fr; }
@@ -415,6 +442,10 @@
   </div>
 </div>
 
+<button id="floatingCartBtn" onclick="openCart()" aria-label="Open cart">
+  🛒<span id="fabCartCount" class="fc-count">0</span>
+</button>
+
 <!-- Bundle Picker Modal -->
 <div id="pickerOverlay" onclick="closePicker()"></div>
 <div id="pickerModal">
@@ -424,6 +455,7 @@
   </div>
   <p class="picker-sub" id="pickerSub"></p>
   <div class="picker-list" id="pickerList"></div>
+  <div class="picker-color-section" id="pickerColorSection"></div>
   <div class="picker-foot">
     <button class="btn secondary" onclick="closePicker()">Cancel</button>
     <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
@@ -448,13 +480,13 @@ const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
    Simple single/multi-color products
    ========================================================= */
 const PRODUCTS = [
-  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00,
+  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00, maxColors:4,
     desc:"A fully articulated snake that slithers and coils just like the real thing.",
     images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
-  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00,
+  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A brooding dragon with sharp spines and a fierce stare.",
     images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
-  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00,
+  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00, maxColors:4,
     desc:"Scales that shimmer and shift color with every angle of light.",
     images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
   { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
@@ -466,10 +498,10 @@ const PRODUCTS = [
   { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
     desc:"A dragon-shaped lamp that stands watch over your desk or shelf.",
     images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
-  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99,
+  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99, maxColors:4,
     desc:"A slow-and-steady turtle with a surprisingly satisfying shell.",
     images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
-  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99,
+  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99, maxColors:4,
     desc:"A dragon egg that opens to reveal the hatchling hidden inside.",
     images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
   { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
@@ -517,13 +549,13 @@ const PRODUCTS = [
   { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
     desc:"A flipping magnetic fidget with a satisfying snap.",
     images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
-  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99,
+  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A sleek, winged dragon built for speed.",
     images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
-  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99,
+  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A dragon with dramatic wings that fold and fan open.",
     images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
-  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99,
+  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99, maxColors:4,
     desc:"A snapping shark jaw fidget that's all bite.",
     images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
   { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
@@ -532,15 +564,15 @@ const PRODUCTS = [
   { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
     desc:"An abstract, sculptural lamp that doubles as a conversation piece.",
     images:["images/mndscape-lamp-1.jpg"] },
-  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99,
+  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
     desc:"A dragon wreathed in dark, flame-like detailing.",
     images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
-  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00,
+  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A storm-toughened dragon with rugged, weathered scales.",
     images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
-  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00,
-    desc:"A dragon lined with venomous spines down its back.", images:[] },
-  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00,
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
+    desc:"A dragon lined with venomous spines down its back.", images:["images/venomspine-dragon-1.jpg"] },
+  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A fiery dragon that looks ready to breathe flame.",
     images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
   { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
@@ -563,7 +595,7 @@ const SIZED_PRODUCTS = [
     desc:"A geared, rotating fidget that's oddly mesmerizing to spin.",
     images:["images/orbitcore-1.jpg","images/orbitcore-2.jpg","images/orbitcore-3.jpg","images/orbitcore-4.jpg","images/orbitcore-5.jpg"],
     sizes:{ small:{ single:4.99, multi:8.99 }, large:{ single:8.99, multi:12.99 } } },
-  { id:"chompasaurus", name:"Chompasaurus", category:"Creatures",
+  { id:"chompasaurus", name:"Chompasaurus", category:"Creatures", maxColors:4,
     desc:"A chomping dino fidget with a jaw that snaps shut.",
     images:["images/chompasaurus-1.jpg","images/chompasaurus-4.jpg"],
     sizes:{ small:{ single:7.99, multi:10.99 }, large:{ single:11.99, multi:14.99 } } },
@@ -681,7 +713,9 @@ let finishSelections = {};
 function getColorMax(id){
   const input = document.querySelector(`input[name="variant-${id}"]:checked`);
   const variant = input ? input.value : "single";
-  return variant === "multi" ? 2 : 1;
+  if(variant === "single") return 1;
+  const p = ALL_ITEMS.find(x=>x.id===id);
+  return (p && p.maxColors) ? p.maxColors : 2;
 }
 
 function colorStripHtml(id){
@@ -736,18 +770,23 @@ function updateColorUI(id){
     const idx = sel.indexOf(cid);
     btn.classList.toggle("selected", idx !== -1);
     btn.classList.toggle("accent", idx === 1);
+    btn.classList.toggle("third", idx === 2);
+    btn.classList.toggle("fourth", idx === 3);
   });
 
   const label = document.getElementById(`colorlabel-${id}`);
   const max = getColorMax(id);
+  const ordinalLabels = ["Primary","Accent","3rd","4th"];
   if(label){
     if(sel.length === 0){
-      label.textContent = max === 2 ? "Choose 2 colors" : "Choose a color";
+      label.textContent = max > 1 ? `Choose up to ${max} colors` : "Choose a color";
+    } else if(max === 1){
+      const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+      label.textContent = `Color: ${names[0]}`;
     } else {
       const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
-      label.textContent = max === 2
-        ? `Primary: ${names[0]}${names[1] ? " · Accent: " + names[1] : " · pick 1 more"}`
-        : `Color: ${names[0]}`;
+      const parts = names.map((n,i) => `${ordinalLabels[i]}: ${n}`);
+      label.textContent = parts.join(" · ") + (sel.length < max ? ` · pick ${max-sel.length} more` : "");
     }
   }
 
@@ -772,7 +811,10 @@ function updateColorUI(id){
 function colorNoteText(id){
   const sel = colorSelections[id] || [];
   const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
-  let base = names.length === 2 ? `Primary ${names[0]}, Accent ${names[1]}` : `Color ${names[0] || "?"}`;
+  const ordinalLabels = ["Primary","Accent","Third","Fourth"];
+  let base = names.length > 1
+    ? names.map((n,i) => `${ordinalLabels[i]} ${n}`).join(", ")
+    : `Color ${names[0] || "?"}`;
   const needsFinish = sel.some(cid => {
     const c = COLORS.find(x=>x.id===cid);
     return c && c.needsFinish;
@@ -1049,7 +1091,9 @@ function removeFromCart(index){
 }
 
 function renderCart(){
-  document.getElementById("cartCount").textContent = cart.reduce((s,i)=>s+i.qty,0);
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById("cartCount").textContent = count;
+  document.getElementById("fabCartCount").textContent = count;
   const wrap = document.getElementById("cartItems");
   if(cart.length === 0){
     wrap.innerHTML = `<div class="empty-note">Your cart is empty.<br>Add something from the catalog.</div>`;
@@ -1125,12 +1169,12 @@ async function checkout(){
 }
 
 /* ---------- bundle picker ---------- */
-let pickerState = null; // { bundleId, count, selected:Set }
+let pickerState = null; // { bundleId, count, selected:Set, itemColors:{itemId:colorId} }
 
 function openPicker(bundleId){
   const b = BUNDLES.find(x=>x.id===bundleId);
   if(!b || !b.picks) return;
-  pickerState = { bundleId, count:b.picks.count, selected:new Set() };
+  pickerState = { bundleId, count:b.picks.count, selected:new Set(), itemColors:{} };
 
   document.getElementById("pickerTitle").textContent = b.name;
   document.getElementById("pickerSub").textContent =
@@ -1148,6 +1192,7 @@ function openPicker(bundleId){
       ${opt.name}
     </label>`).join("");
 
+  document.getElementById("pickerColorSection").innerHTML = "";
   document.getElementById("pickerOverlay").classList.add("open");
   document.getElementById("pickerModal").classList.add("open");
   updatePickerConfirmState();
@@ -1158,11 +1203,42 @@ function onPickerToggle(optId){
   const checked = pickerState.selected.has(optId);
   if(checked){
     pickerState.selected.delete(optId);
+    delete pickerState.itemColors[optId];
   } else {
     if(pickerState.selected.size >= pickerState.count) return; // ignore, at limit
     pickerState.selected.add(optId);
   }
   updatePickerConfirmState();
+}
+
+function pickerSetColor(itemId, colorId){
+  if(!pickerState) return;
+  pickerState.itemColors[itemId] = colorId;
+  updatePickerConfirmState();
+}
+
+function renderPickerColorSection(){
+  const section = document.getElementById("pickerColorSection");
+  const selectedIds = [...pickerState.selected];
+  if(selectedIds.length === 0){
+    section.innerHTML = "";
+    return;
+  }
+  section.innerHTML = selectedIds.map(itemId => {
+    const p = ALL_ITEMS.find(x=>x.id===itemId);
+    const name = p ? p.name : itemId;
+    const chosen = pickerState.itemColors[itemId];
+    return `
+      <div class="picker-color-item">
+        <div class="picker-color-name">${name} — ${chosen ? COLORS.find(c=>c.id===chosen).name : "choose a color"}</div>
+        <div class="color-strip">
+          ${COLORS.map(c => `
+            <button type="button" class="swatch${chosen===c.id ? " selected" : ""}" style="background:${c.gradient || c.hex}"
+              title="${c.name}" onclick="pickerSetColor('${itemId}','${c.id}')" aria-label="${c.name}"></button>
+          `).join("")}
+        </div>
+      </div>`;
+  }).join("");
 }
 
 function updatePickerConfirmState(){
@@ -1176,18 +1252,33 @@ function updatePickerConfirmState(){
     input.checked = isChecked;
     input.disabled = !isChecked && atLimit;
   });
-  document.getElementById("pickerSub").textContent =
-    `Selected ${pickerState.selected.size} of ${pickerState.count}.`;
-  document.getElementById("pickerConfirmBtn").disabled = pickerState.selected.size !== pickerState.count;
+
+  renderPickerColorSection();
+
+  const countDone = pickerState.selected.size === pickerState.count;
+  const allColored = [...pickerState.selected].every(id => !!pickerState.itemColors[id]);
+
+  document.getElementById("pickerSub").textContent = !countDone
+    ? `Selected ${pickerState.selected.size} of ${pickerState.count}.`
+    : allColored
+      ? `All set — ${pickerState.count} chosen, colors picked.`
+      : `Now choose a color for each.`;
+
+  document.getElementById("pickerConfirmBtn").disabled = !(countDone && allColored);
 }
 
 function confirmPicker(){
-  if(!pickerState || pickerState.selected.size !== pickerState.count) return;
-  const names = [...pickerState.selected].map(id => {
+  if(!pickerState) return;
+  const countDone = pickerState.selected.size === pickerState.count;
+  const allColored = [...pickerState.selected].every(id => !!pickerState.itemColors[id]);
+  if(!countDone || !allColored) return;
+  const parts = [...pickerState.selected].map(id => {
     const p = ALL_ITEMS.find(x=>x.id===id);
-    return p ? p.name : id;
+    const name = p ? p.name : id;
+    const colorName = COLORS.find(c=>c.id===pickerState.itemColors[id]).name;
+    return `${name} (${colorName})`;
   });
-  addBundleToCart(pickerState.bundleId, names.join(", "));
+  addBundleToCart(pickerState.bundleId, parts.join(", "));
   closePicker();
 }
 
@@ -1217,6 +1308,14 @@ function applyScrollReveal(){
     revealObserver.observe(el);
   });
 }
+
+/* ---------- floating cart button ---------- */
+function updateFloatingCartVisibility(){
+  const fab = document.getElementById("floatingCartBtn");
+  fab.classList.toggle("visible", window.scrollY > 420);
+}
+window.addEventListener("scroll", updateFloatingCartVisibility, { passive:true });
+updateFloatingCartVisibility();
 
 renderFilterBar();
 renderProducts();
