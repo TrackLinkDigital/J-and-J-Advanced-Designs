@@ -786,7 +786,7 @@ function updateColorUI(id){
     } else {
       const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
       const parts = names.map((n,i) => `${ordinalLabels[i]}: ${n}`);
-      label.textContent = parts.join(" · ") + (sel.length < max ? ` · pick ${max-sel.length} more` : "");
+      label.textContent = parts.join(" · ") + (sel.length < max ? ` · up to ${max - sel.length} more (optional)` : "");
     }
   }
 
@@ -805,7 +805,7 @@ function updateColorUI(id){
   }
 
   const btn = document.querySelector(`.card[data-id="${id}"] .add-btn`);
-  if(btn) btn.disabled = sel.length !== max;
+  if(btn) btn.disabled = max === 1 ? sel.length !== 1 : sel.length === 0;
 }
 
 function colorNoteText(id){
@@ -1015,7 +1015,7 @@ function addProductToCart(id){
   const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
   const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
   const max = getColorMax(id);
-  if((colorSelections[id]||[]).length !== max) return; // guard; button should already prevent this
+  if(max === 1 ? (colorSelections[id]||[]).length !== 1 : (colorSelections[id]||[]).length === 0) return; // guard; button should already prevent this
   const colorText = colorNoteText(id);
   const noteEl = document.getElementById(`note-${id}`);
   const customNote = noteEl ? noteEl.value.trim().slice(0,40) : "";
@@ -1039,7 +1039,7 @@ function addSizedToCart(id){
   const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
   const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
   const max = getColorMax(id);
-  if((colorSelections[id]||[]).length !== max) return; // guard; button should already prevent this
+  if(max === 1 ? (colorSelections[id]||[]).length !== 1 : (colorSelections[id]||[]).length === 0) return; // guard; button should already prevent this
   const unitPrice = p.sizes[size][variant];
 
   cart.push({
