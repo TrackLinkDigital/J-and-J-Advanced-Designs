@@ -288,11 +288,29 @@
   .picker-foot{ padding:16px 20px 20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line); margin-top:8px; }
   #closePicker{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
 
+  /* Custom order form modal (shares the picker modal's overlay treatment) */
+  #customFormOverlay{
+    position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:50;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease;
+  }
+  #customFormOverlay.open{ opacity:1; visibility:visible; }
+  #customFormModal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
+    width:min(520px,92vw); max-height:85vh; background:var(--panel); border-radius:var(--radius);
+    z-index:51; box-shadow:0 24px 60px rgba(0,0,0,.3); display:flex; flex-direction:column;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
+  }
+  #customFormModal.open{ opacity:1; visibility:visible; transform:translate(-50%,-50%); }
+  #closeCustomFormBtn{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
+  .custom-form-body{ padding:4px 20px 20px; overflow-y:auto; }
+
   .picker-color-section{ padding:2px 20px 4px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; max-height:220px; }
   .picker-color-item{ border-top:1px solid var(--line); padding-top:10px; }
-  .picker-color-item .picker-color-name{ font-size:.85rem; font-weight:600; margin-bottom:4px; }
+  .picker-color-item .picker-color-name{ font-size:.85rem; font-weight:600; margin-bottom:2px; }
+  .picker-color-item .picker-color-status{ font-size:.76rem; color:var(--ink-soft); margin-bottom:2px; }
   .picker-color-item .color-strip{ padding:2px 2px 4px; }
   .picker-color-item .swatch{ width:22px; height:22px; min-width:22px; }
+  .picker-color-item .finish-row{ margin-top:2px; margin-bottom:2px; }
 
   @media (max-width:820px){
     .hero{ grid-template-columns:1fr; }
@@ -452,39 +470,7 @@
     <li><span class="how-num">3</span><span>Once approved, it's printed, cleaned up, and finished by hand.</span></li>
     <li><span class="how-num">4</span><span>Packed carefully and shipped to your door.</span></li>
   </ul>
-  <a class="btn" style="margin-top:24px;" href="#custom-form">Request a custom quote</a>
-
-  <div class="card" id="custom-form" style="max-width:540px; margin-top:28px;">
-    <div class="card-body">
-      <h3 style="margin-bottom:2px;">Tell me about your idea</h3>
-      <p style="color:var(--ink-soft); font-size:.85rem; margin:0 0 4px;">I'll follow up by email with a quote and a proof before anything gets printed.</p>
-
-      <div data-fs-success class="form-success"></div>
-      <div data-fs-error class="form-error"></div>
-
-      <form id="customOrderForm">
-        <label class="co-label" for="co-name">Name</label>
-        <input type="text" id="co-name" name="name" data-fs-field required class="note-field" style="margin-bottom:12px;">
-        <span data-fs-error="name" class="field-error"></span>
-
-        <label class="co-label" for="co-email">Email</label>
-        <input type="email" id="co-email" name="email" data-fs-field required class="note-field" style="margin-bottom:12px;">
-        <span data-fs-error="email" class="field-error"></span>
-
-        <label class="co-label" for="co-phone">Phone (optional)</label>
-        <input type="tel" id="co-phone" name="phone" data-fs-field class="note-field" style="margin-bottom:12px;">
-
-        <label class="co-label" for="co-desc">What do you want made?</label>
-        <textarea id="co-desc" name="message" data-fs-field required class="note-field" rows="4" style="margin-bottom:12px; resize:vertical;" placeholder="Describe your idea — size, colors, timeline, anything reference-worthy."></textarea>
-        <span data-fs-error="message" class="field-error"></span>
-
-        <label class="co-label" for="co-photo">Reference photo (optional)</label>
-        <input type="file" id="co-photo" name="attachment" data-fs-field accept="image/*" style="margin-bottom:16px; width:100%;">
-
-        <button type="submit" class="btn" data-fs-submit-btn style="width:100%;">Send Request</button>
-      </form>
-    </div>
-  </div>
+  <button class="btn" style="margin-top:24px;" onclick="openCustomForm()">Request a custom quote</button>
 </section>
 
 <div class="layers"></div>
@@ -508,7 +494,7 @@
   </div>
   <div class="card" style="max-width:420px; margin-top:24px;">
     <div class="card-body">
-      <p class="mono"><strong>Email:</strong> your-email@example.com</p>
+      <p class="mono"><strong>Email:</strong> jacqjanson@icloud.com</p>
       <p class="mono"><strong>Instagram:</strong> @yourhandle</p>
       <p class="mono"><strong>Facebook:</strong> Your Page Name</p>
     </div>
@@ -552,6 +538,43 @@
   <div class="picker-foot">
     <button class="btn secondary" onclick="closePicker()">Cancel</button>
     <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
+  </div>
+</div>
+
+<!-- Custom Order Form Modal -->
+<div id="customFormOverlay" onclick="closeCustomForm()"></div>
+<div id="customFormModal">
+  <div class="picker-head">
+    <h3>Tell me about your idea</h3>
+    <button id="closeCustomFormBtn" onclick="closeCustomForm()">&times;</button>
+  </div>
+  <p class="picker-sub" style="padding-top:0;">I'll follow up by email with a quote and a proof before anything gets printed.</p>
+
+  <div class="custom-form-body">
+    <div data-fs-success class="form-success"></div>
+    <div data-fs-error class="form-error"></div>
+
+    <form id="customOrderForm">
+      <label class="co-label" for="co-name">Name</label>
+      <input type="text" id="co-name" name="name" data-fs-field required class="note-field" style="margin-bottom:12px;">
+      <span data-fs-error="name" class="field-error"></span>
+
+      <label class="co-label" for="co-email">Email</label>
+      <input type="email" id="co-email" name="email" data-fs-field required class="note-field" style="margin-bottom:12px;">
+      <span data-fs-error="email" class="field-error"></span>
+
+      <label class="co-label" for="co-phone">Phone (optional)</label>
+      <input type="tel" id="co-phone" name="phone" data-fs-field class="note-field" style="margin-bottom:12px;">
+
+      <label class="co-label" for="co-desc">What do you want made?</label>
+      <textarea id="co-desc" name="message" data-fs-field required class="note-field" rows="4" style="margin-bottom:12px; resize:vertical;" placeholder="Describe your idea — size, colors, timeline, anything reference-worthy."></textarea>
+      <span data-fs-error="message" class="field-error"></span>
+
+      <label class="co-label" for="co-photo">Reference photo (optional)</label>
+      <input type="file" id="co-photo" name="attachment" data-fs-field accept="image/*" style="margin-bottom:16px; width:100%;">
+
+      <button type="submit" class="btn" data-fs-submit-btn style="width:100%;">Send Request</button>
+    </form>
   </div>
 </div>
 
@@ -1270,12 +1293,17 @@ async function checkout(){
 }
 
 /* ---------- bundle picker ---------- */
-let pickerState = null; // { bundleId, count, selected:Set, itemColors:{itemId:colorId} }
+let pickerState = null; // { bundleId, count, selected:Set, itemColors:{itemId:[colorId,...]}, itemFinishes:{itemId:finishId} }
+
+function getItemMaxColors(itemId){
+  const p = ALL_ITEMS.find(x=>x.id===itemId);
+  return (p && p.maxColors) ? p.maxColors : 2;
+}
 
 function openPicker(bundleId){
   const b = BUNDLES.find(x=>x.id===bundleId);
   if(!b || !b.picks) return;
-  pickerState = { bundleId, count:b.picks.count, selected:new Set(), itemColors:{} };
+  pickerState = { bundleId, count:b.picks.count, selected:new Set(), itemColors:{}, itemFinishes:{} };
 
   document.getElementById("pickerTitle").textContent = b.name;
   document.getElementById("pickerSub").textContent =
@@ -1305,18 +1333,38 @@ function onPickerToggle(optId){
   if(checked){
     pickerState.selected.delete(optId);
     delete pickerState.itemColors[optId];
+    delete pickerState.itemFinishes[optId];
   } else {
     if(pickerState.selected.size >= pickerState.count) return; // ignore, at limit
     pickerState.selected.add(optId);
+    pickerState.itemColors[optId] = [];
+    pickerState.itemFinishes[optId] = "basic";
   }
   updatePickerConfirmState();
 }
 
-function pickerSetColor(itemId, colorId){
+function pickerToggleColor(itemId, colorId){
   if(!pickerState) return;
-  pickerState.itemColors[itemId] = colorId;
+  const max = getItemMaxColors(itemId);
+  let sel = pickerState.itemColors[itemId] || [];
+  const idx = sel.indexOf(colorId);
+  if(idx !== -1){
+    sel.splice(idx,1);
+  } else {
+    if(sel.length >= max) sel.shift(); // drop oldest to make room (FIFO)
+    sel.push(colorId);
+  }
+  pickerState.itemColors[itemId] = sel;
   updatePickerConfirmState();
 }
+
+function pickerSetFinish(itemId, finishId){
+  if(!pickerState) return;
+  pickerState.itemFinishes[itemId] = finishId;
+  updatePickerConfirmState();
+}
+
+const ORDINAL_LABELS = ["Primary","Accent","3rd","4th"];
 
 function renderPickerColorSection(){
   const section = document.getElementById("pickerColorSection");
@@ -1328,16 +1376,35 @@ function renderPickerColorSection(){
   section.innerHTML = selectedIds.map(itemId => {
     const p = ALL_ITEMS.find(x=>x.id===itemId);
     const name = p ? p.name : itemId;
-    const chosen = pickerState.itemColors[itemId];
+    const max = getItemMaxColors(itemId);
+    const sel = pickerState.itemColors[itemId] || [];
+    const needsFinish = sel.some(cid => {
+      const c = COLORS.find(x=>x.id===cid);
+      return c && c.needsFinish;
+    });
+    const finish = pickerState.itemFinishes[itemId] || "basic";
+
+    const statusText = sel.length === 0
+      ? `Choose up to ${max} color${max>1?"s":""}`
+      : sel.map((cid,i) => `${ORDINAL_LABELS[i]}: ${COLORS.find(c=>c.id===cid).name}`).join(" · ")
+        + (sel.length < max ? ` · up to ${max-sel.length} more (optional)` : "");
+
     return `
       <div class="picker-color-item">
-        <div class="picker-color-name">${name} — ${chosen ? COLORS.find(c=>c.id===chosen).name : "choose a color"}</div>
+        <div class="picker-color-name">${name}</div>
+        <div class="picker-color-status">${statusText}</div>
         <div class="color-strip">
-          ${COLORS.map(c => `
-            <button type="button" class="swatch${chosen===c.id ? " selected" : ""}" style="background:${c.gradient || c.hex}"
-              title="${c.name}" onclick="pickerSetColor('${itemId}','${c.id}')" aria-label="${c.name}"></button>
-          `).join("")}
+          ${COLORS.map(c => {
+            const idx = sel.indexOf(c.id);
+            const cls = idx === -1 ? "" : idx === 1 ? " selected accent" : idx === 2 ? " selected third" : idx === 3 ? " selected fourth" : " selected";
+            return `<button type="button" class="swatch${cls}" style="background:${c.gradient || c.hex}"
+              title="${c.name}" onclick="pickerToggleColor('${itemId}','${c.id}')" aria-label="${c.name}"></button>`;
+          }).join("")}
         </div>
+        ${needsFinish ? `
+        <div class="finish-row" style="display:flex;">
+          ${FINISHES.map(f => `<button type="button" class="finish-chip${f.id===finish?" active":""}" onclick="pickerSetFinish('${itemId}','${f.id}')">${f.name}</button>`).join("")}
+        </div>` : ""}
       </div>`;
   }).join("");
 }
@@ -1357,13 +1424,13 @@ function updatePickerConfirmState(){
   renderPickerColorSection();
 
   const countDone = pickerState.selected.size === pickerState.count;
-  const allColored = [...pickerState.selected].every(id => !!pickerState.itemColors[id]);
+  const allColored = [...pickerState.selected].every(id => (pickerState.itemColors[id]||[]).length > 0);
 
   document.getElementById("pickerSub").textContent = !countDone
     ? `Selected ${pickerState.selected.size} of ${pickerState.count}.`
     : allColored
       ? `All set — ${pickerState.count} chosen, colors picked.`
-      : `Now choose a color for each.`;
+      : `Now choose at least 1 color for each.`;
 
   document.getElementById("pickerConfirmBtn").disabled = !(countDone && allColored);
 }
@@ -1371,13 +1438,20 @@ function updatePickerConfirmState(){
 function confirmPicker(){
   if(!pickerState) return;
   const countDone = pickerState.selected.size === pickerState.count;
-  const allColored = [...pickerState.selected].every(id => !!pickerState.itemColors[id]);
+  const allColored = [...pickerState.selected].every(id => (pickerState.itemColors[id]||[]).length > 0);
   if(!countDone || !allColored) return;
+
   const parts = [...pickerState.selected].map(id => {
     const p = ALL_ITEMS.find(x=>x.id===id);
     const name = p ? p.name : id;
-    const colorName = COLORS.find(c=>c.id===pickerState.itemColors[id]).name;
-    return `${name} (${colorName})`;
+    const sel = pickerState.itemColors[id] || [];
+    const colorText = sel.map((cid,i) => `${ORDINAL_LABELS[i]} ${COLORS.find(c=>c.id===cid).name}`).join(", ");
+    const needsFinish = sel.some(cid => {
+      const c = COLORS.find(x=>x.id===cid);
+      return c && c.needsFinish;
+    });
+    const finishText = needsFinish ? `, Finish ${FINISHES.find(f=>f.id===(pickerState.itemFinishes[id]||"basic")).name}` : "";
+    return `${name} (${colorText}${finishText})`;
   });
   addBundleToCart(pickerState.bundleId, parts.join(", "));
   closePicker();
@@ -1408,6 +1482,16 @@ function applyScrollReveal(){
     el.classList.add("reveal");
     revealObserver.observe(el);
   });
+}
+
+/* ---------- custom order form modal ---------- */
+function openCustomForm(){
+  document.getElementById("customFormOverlay").classList.add("open");
+  document.getElementById("customFormModal").classList.add("open");
+}
+function closeCustomForm(){
+  document.getElementById("customFormOverlay").classList.remove("open");
+  document.getElementById("customFormModal").classList.remove("open");
 }
 
 /* ---------- floating cart button ---------- */
