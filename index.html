@@ -146,6 +146,18 @@
     width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px;
     font-family:'Inter',sans-serif; font-size:.85rem;
   }
+  .co-label{ display:block; font-size:.8rem; font-weight:600; color:var(--ink-soft); margin-bottom:5px; }
+  .field-error{ color:var(--danger); font-size:.76rem; display:block; margin:-8px 0 10px; }
+  .form-success{
+    background:#eaf7f4; color:var(--teal-deep); border:1px solid var(--teal);
+    border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:.88rem;
+  }
+  .form-success:empty{ display:none; }
+  .form-error{
+    background:#fbeae6; color:var(--danger); border:1px solid var(--danger);
+    border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:.88rem;
+  }
+  .form-error:empty{ display:none; }
 
   .color-strip-wrap{ margin-top:2px; }
   .color-strip{
@@ -316,6 +328,7 @@
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>
+      <a href="#materials">Materials</a>
       <a href="#bundles">Collections</a>
       <a href="#soon" id="soonNavLink">Coming Soon</a>
       <a href="#custom">Custom Orders</a>
@@ -360,6 +373,54 @@
 
 <div class="layers"></div>
 
+<section id="materials">
+  <div class="section-head">
+    <div class="tag">Know your options</div>
+    <h2>Materials Guide</h2>
+    <p>Every color comes in one of these finishes. Here's what each one actually looks and feels like.</p>
+  </div>
+  <div class="grid materials-grid">
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Basic PLA</h3>
+        <p class="item-desc">Our standard filament — a clean, slightly satin finish with sharp detail and accurate color. The most reliable option, and available in the widest range of colors.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Silk PLA</h3>
+        <p class="item-desc">A high-shine, glossy finish that makes colors look rich and almost metallic. Adds a premium look, especially on dragons and display pieces.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Matte PLA</h3>
+        <p class="item-desc">A soft, non-reflective finish that hides layer lines and feels smooth to the touch. A more subtle, understated look than Silk or Basic.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Glow-in-the-Dark</h3>
+        <p class="item-desc">Charges under light exposure and glows on its own after dark. A fun option for kids' rooms, or anything you want to spot at night.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Multi-Color Blend</h3>
+        <p class="item-desc">A single spool that transitions between colors as it prints, creating a gradient effect at no extra cost. No two pieces print exactly alike.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Translucent / Crystal</h3>
+        <p class="item-desc">Light passes through this filament for a glassy, glowing look — ideal for lamps and anything meant to be lit from within.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="layers"></div>
+
 <section id="bundles">
   <div class="section-head">
     <div class="tag">Best value</div>
@@ -391,7 +452,39 @@
     <li><span class="how-num">3</span><span>Once approved, it's printed, cleaned up, and finished by hand.</span></li>
     <li><span class="how-num">4</span><span>Packed carefully and shipped to your door.</span></li>
   </ul>
-  <a class="btn" style="margin-top:24px;" href="#contact">Request a custom quote</a>
+  <a class="btn" style="margin-top:24px;" href="#custom-form">Request a custom quote</a>
+
+  <div class="card" id="custom-form" style="max-width:540px; margin-top:28px;">
+    <div class="card-body">
+      <h3 style="margin-bottom:2px;">Tell me about your idea</h3>
+      <p style="color:var(--ink-soft); font-size:.85rem; margin:0 0 4px;">I'll follow up by email with a quote and a proof before anything gets printed.</p>
+
+      <div data-fs-success class="form-success"></div>
+      <div data-fs-error class="form-error"></div>
+
+      <form id="customOrderForm">
+        <label class="co-label" for="co-name">Name</label>
+        <input type="text" id="co-name" name="name" data-fs-field required class="note-field" style="margin-bottom:12px;">
+        <span data-fs-error="name" class="field-error"></span>
+
+        <label class="co-label" for="co-email">Email</label>
+        <input type="email" id="co-email" name="email" data-fs-field required class="note-field" style="margin-bottom:12px;">
+        <span data-fs-error="email" class="field-error"></span>
+
+        <label class="co-label" for="co-phone">Phone (optional)</label>
+        <input type="tel" id="co-phone" name="phone" data-fs-field class="note-field" style="margin-bottom:12px;">
+
+        <label class="co-label" for="co-desc">What do you want made?</label>
+        <textarea id="co-desc" name="message" data-fs-field required class="note-field" rows="4" style="margin-bottom:12px; resize:vertical;" placeholder="Describe your idea — size, colors, timeline, anything reference-worthy."></textarea>
+        <span data-fs-error="message" class="field-error"></span>
+
+        <label class="co-label" for="co-photo">Reference photo (optional)</label>
+        <input type="file" id="co-photo" name="attachment" data-fs-field accept="image/*" style="margin-bottom:16px; width:100%;">
+
+        <button type="submit" class="btn" data-fs-submit-btn style="width:100%;">Send Request</button>
+      </form>
+    </div>
+  </div>
 </section>
 
 <div class="layers"></div>
@@ -461,6 +554,14 @@
     <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
   </div>
 </div>
+
+<script>
+  // Custom order form -> Formspree (no backend needed for this one; it's
+  // just contact-form email delivery, not payment, so no Worker involved).
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#customOrderForm', formId: 'xbdnyrjj' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 
 <script>
 /* =========================================================
