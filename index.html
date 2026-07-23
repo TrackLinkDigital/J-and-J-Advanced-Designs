@@ -48,12 +48,29 @@
     display:flex; justify-content:space-between; align-items:center;
     max-width:1200px; margin:0 auto; padding-bottom:18px; flex-wrap:wrap; gap:12px;
   }
-  .brand{ display:flex; flex-direction:column; }
+  .brand{ display:flex; flex-direction:column; perspective:700px; }
   .brand .eyebrow{
     font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em;
     color:var(--amber); text-transform:uppercase; margin-bottom:4px;
   }
-  .brand h1{ font-size:1.7rem; font-weight:700; }
+  .brand h1{
+    font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
+  }
+  @keyframes idleTilt3d{
+    0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
+    25%{ transform:rotateX(7deg) rotateY(-9deg); }
+    50%{ transform:rotateX(-5deg) rotateY(7deg); }
+    75%{ transform:rotateX(4deg) rotateY(-5deg); }
+  }
+  .brand h1.auto-tilt{ animation:idleTilt3d 7s ease-in-out infinite; }
   nav{ display:flex; gap:22px; flex-wrap:wrap; align-items:center; }
   nav a{
     color:#e7e5df; text-decoration:none; font-size:.92rem; font-weight:500;
@@ -1488,6 +1505,33 @@ function closeCustomForm(){
   document.getElementById("customFormOverlay").classList.remove("open");
   document.getElementById("customFormModal").classList.remove("open");
 }
+
+/* ---------- 3D header text tilt ---------- */
+function setupBrandTilt(){
+  const brandWrap = document.querySelector(".brand");
+  const brandH1 = document.querySelector(".brand h1");
+  if(!brandWrap || !brandH1) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if(reducedMotion) return; // leave it static, no animation at all
+
+  if(hasFinePointer){
+    brandWrap.addEventListener("mousemove", (e)=>{
+      const rect = brandWrap.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      brandH1.style.transform = `rotateX(${-y*22}deg) rotateY(${x*22}deg)`;
+    });
+    brandWrap.addEventListener("mouseleave", ()=>{
+      brandH1.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+  } else {
+    brandH1.classList.add("auto-tilt"); // phones/tablets: no cursor, so gently animate instead
+  }
+}
+setupBrandTilt();
 
 /* ---------- floating cart button ---------- */
 function updateFloatingCartVisibility(){
