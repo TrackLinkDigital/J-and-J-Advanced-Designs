@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>J&J Advanced Designs — Custom 3D Printing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b1e24;
+    --ink-soft:#3a3f4b;
+    --paper:#f2f1ed;
+    --panel:#ffffff;
+    --line:#dedad0;
+    --teal:#1f9d8a;
+    --teal-deep:#146b5e;
+    --amber:#f0a93e;
+    --danger:#c85a3f;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Space Grotesk',sans-serif; margin:0; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+
+  /* layer-line signature texture */
+  .layers{
+    height:14px;
+    background:repeating-linear-gradient(
+      to right, var(--teal) 0 18px, var(--amber) 18px 26px, transparent 26px 40px
+    );
+    opacity:.9;
+  }
+
+  header{
+    background:var(--ink);
+    color:#fff;
+    padding:20px 24px 0;
+  }
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    max-width:1200px; margin:0 auto; padding-bottom:18px; flex-wrap:wrap; gap:12px;
+  }
+  .brand{ display:flex; flex-direction:column; perspective:700px; }
+  .brand .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:.72rem; letter-spacing:.14em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:4px;
+  }
+  .brand h1{
+    font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
+  }
+  @keyframes idleTilt3d{
+    0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
+    25%{ transform:rotateX(7deg) rotateY(-9deg); }
+    50%{ transform:rotateX(-5deg) rotateY(7deg); }
+    75%{ transform:rotateX(4deg) rotateY(-5deg); }
+  }
+  .brand h1.auto-tilt{ animation:idleTilt3d 7s ease-in-out infinite; }
+  nav{ display:flex; gap:22px; flex-wrap:wrap; align-items:center; }
+  nav a{
+    color:#e7e5df; text-decoration:none; font-size:.92rem; font-weight:500;
+    cursor:pointer; padding:6px 2px; border-bottom:2px solid transparent;
+    transition:border-color .2s ease, color .2s ease;
+  }
+  nav a:hover{ border-bottom-color:var(--teal); }
+  #cartBtn{
+    background:var(--teal); color:#fff; border:none; border-radius:999px;
+    padding:9px 16px; font-weight:600; cursor:pointer; font-size:.88rem;
+    display:flex; align-items:center; gap:8px;
+    transition:transform .15s ease, background .2s ease;
+  }
+  #cartBtn:hover{ transform:scale(1.05); background:var(--teal-deep); }
+  #cartCount{
+    background:var(--ink); color:#fff; border-radius:999px; padding:1px 8px; font-size:.78rem;
+  }
+
+  .hero{
+    max-width:1200px; margin:0 auto; padding:56px 24px 64px; color:#fff;
+    display:grid; grid-template-columns:1.2fr .8fr; gap:40px; align-items:center;
+  }
+  .hero .kicker{ color:var(--amber); font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; }
+  .hero h2{ font-size:2.6rem; line-height:1.08; margin:12px 0 16px; }
+  .hero p{ color:#c7c4bb; font-size:1.05rem; line-height:1.55; max-width:46ch; }
+  .hero-stats{ display:flex; gap:26px; margin-top:26px; }
+  .hero-stats div{ border-left:2px solid var(--teal); padding-left:12px; }
+  .hero-stats .num{ font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:500; }
+  .hero-stats .lbl{ font-size:.78rem; color:#9c9a92; }
+  .hero-panel{
+    background:var(--panel); color:var(--ink); border-radius:var(--radius);
+    padding:24px; box-shadow:0 20px 40px rgba(0,0,0,.25);
+  }
+  .hero-panel h3{ font-size:1.05rem; margin-bottom:10px; }
+  .hero-panel ol{ margin:0; padding-left:18px; color:var(--ink-soft); font-size:.92rem; line-height:1.9; }
+  .btn{
+    display:inline-block; background:var(--teal); color:#fff; border:none;
+    padding:12px 20px; border-radius:8px; font-weight:600; cursor:pointer;
+    font-size:.92rem; text-decoration:none;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn:hover{ background:var(--teal-deep); transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0); }
+  .btn.secondary{ background:transparent; border:1.5px solid var(--ink); color:var(--ink); }
+  .btn.secondary:hover{ background:var(--ink); color:#fff; }
+  .btn:disabled{ background:#b8b6ad; cursor:not-allowed; }
+
+  section{ max-width:1200px; margin:0 auto; padding:64px 24px; }
+  .section-head{ margin-bottom:8px; }
+  .section-head .tag{ font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--teal-deep); text-transform:uppercase; letter-spacing:.1em; }
+  .section-head h2{ font-size:1.9rem; margin-top:4px; }
+  .section-head p{ color:var(--ink-soft); max-width:60ch; margin-top:8px; }
+
+  .filter-bar{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:24px;
+    position:sticky; top:0; background:var(--paper); padding:10px 0; z-index:10;
+  }
+  .filter-chip{
+    border:1.5px solid var(--line); background:var(--panel); border-radius:999px;
+    padding:7px 15px; font-size:.82rem; font-weight:500; cursor:pointer; color:var(--ink-soft);
+    white-space:nowrap; transition:background .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+  }
+  .filter-chip:hover{ transform:translateY(-1px); border-color:var(--teal); }
+  .filter-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .filter-chip .count{ opacity:.65; margin-left:4px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:22px; margin-top:20px; }
+
+  .card{
+    background:var(--panel); border-radius:var(--radius); overflow:hidden;
+    border:1px solid var(--line); display:flex; flex-direction:column;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(20,20,20,.09); }
+  .card img{ width:100%; height:200px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
+  .card:hover img{ transform:scale(1.05); }
+  .card-body{ padding:16px 16px 18px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .card h3{ font-size:1.05rem; }
+  .item-desc{ color:var(--ink-soft); font-size:.82rem; line-height:1.45; margin:0; }
+  .variant-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .variant-opt{
+    flex:1; min-width:110px; border:1.5px solid var(--line); border-radius:8px;
+    padding:8px 10px; cursor:pointer; font-size:.82rem;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .variant-opt input{ margin-right:6px; }
+  .variant-opt .price{ font-family:'JetBrains Mono',monospace; font-weight:500; display:block; margin-top:2px; }
+  .variant-opt.selected{ border-color:var(--teal); background:#eaf7f4; }
+  .note-field{
+    width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px;
+    font-family:'Inter',sans-serif; font-size:.85rem;
+  }
+  .co-label{ display:block; font-size:.8rem; font-weight:600; color:var(--ink-soft); margin-bottom:5px; }
+  .field-error{ color:var(--danger); font-size:.76rem; display:block; margin:-8px 0 10px; }
+  .form-success{
+    background:#eaf7f4; color:var(--teal-deep); border:1px solid var(--teal);
+    border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:.88rem;
+  }
+  .form-success:empty{ display:none; }
+  .form-error{
+    background:#fbeae6; color:var(--danger); border:1px solid var(--danger);
+    border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:.88rem;
+  }
+  .form-error:empty{ display:none; }
+
+  .color-strip-wrap{ margin-top:2px; }
+  .color-strip{
+    display:flex; gap:9px; overflow-x:auto; padding:5px 2px 9px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:thin;
+  }
+  .swatch{
+    width:28px; height:28px; min-width:28px; border-radius:50%; border:2px solid var(--line);
+    cursor:pointer; padding:0; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .swatch:hover{ transform:scale(1.12); }
+  .swatch.selected{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--teal); }
+  .swatch.selected.accent{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--amber); }
+  .swatch.selected.third{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--danger); }
+  .swatch.selected.fourth{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--ink); }
+  .color-selected-label{ font-size:.78rem; color:var(--ink-soft); }
+  .finish-row{ display:flex; gap:6px; margin-top:6px; }
+  .finish-chip{
+    border:1.5px solid var(--line); background:var(--panel); border-radius:999px;
+    padding:4px 11px; font-size:.74rem; font-weight:500; cursor:pointer; color:var(--ink-soft);
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .finish-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
+  .card-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; gap:10px; }
+  .qty-input{ width:52px; padding:8px; border:1px solid var(--line); border-radius:8px; text-align:center; }
+  .add-btn{ flex:1; }
+
+  .coming-soon-card{ position:relative; }
+  .coming-soon-card img{ filter:grayscale(45%); opacity:.75; }
+  .coming-soon-badge{
+    position:absolute; top:12px; left:12px; background:var(--ink); color:#fff;
+    font-family:'JetBrains Mono',monospace; font-size:.7rem; padding:4px 10px; border-radius:999px;
+  }
+
+  .bundle-card .card-body{ gap:8px; }
+  .bundle-price{ font-family:'JetBrains Mono',monospace; font-size:1.3rem; color:var(--teal-deep); font-weight:500; }
+
+  .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+  .about-grid p{ color:var(--ink-soft); line-height:1.7; }
+  .how-list{ list-style:none; padding:0; margin:18px 0 0; display:flex; flex-direction:column; gap:14px; }
+  .how-list li{ display:flex; gap:14px; align-items:flex-start; }
+  .how-num{
+    font-family:'JetBrains Mono',monospace; background:var(--ink); color:var(--amber);
+    width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-size:.82rem; flex-shrink:0;
+  }
+
+  footer{ background:var(--ink); color:#c7c4bb; padding:40px 24px; text-align:center; }
+  footer .mono{ color:#8f8d85; font-size:.8rem; margin-top:6px; }
+
+  /* Cart drawer */
+  #cartOverlay{
+    position:fixed; inset:0; background:rgba(20,20,20,.45); z-index:40;
+    opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
+  }
+  #cartOverlay.open{ opacity:1; visibility:visible; }
+  #cartDrawer{
+    position:fixed; top:0; right:0; height:100%; width:min(420px,92vw);
+    background:var(--panel); z-index:41; transform:translateX(100%);
+    transition:transform .25s ease; display:flex; flex-direction:column; box-shadow:-10px 0 30px rgba(0,0,0,.2);
+  }
+  #cartDrawer.open{ transform:translateX(0); }
+  .cart-head{ padding:20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; }
+  .cart-items{ flex:1; overflow-y:auto; padding:16px 20px; display:flex; flex-direction:column; gap:14px; }
+  .cart-item{ display:flex; gap:12px; border-bottom:1px solid var(--line); padding-bottom:14px; }
+  .cart-item img{ width:56px; height:56px; object-fit:cover; border-radius:8px; background:#e5e3db; flex-shrink:0; }
+  .cart-item-info{ flex:1; }
+  .cart-item-info .name{ font-weight:600; font-size:.92rem; }
+  .cart-item-info .meta{ font-size:.8rem; color:var(--ink-soft); }
+  .cart-item-info .row{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
+  .remove-link{ background:none; border:none; color:var(--danger); font-size:.78rem; cursor:pointer; padding:0; transition:opacity .15s ease; }
+  .remove-link:hover{ opacity:.65; text-decoration:underline; }
+
+  @keyframes pop{ 0%{transform:scale(1);} 45%{transform:scale(1.07);} 100%{transform:scale(1);} }
+  .add-btn.just-added{ animation:pop .32s ease; background:var(--teal-deep); }
+
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+  .cart-foot{ border-top:1px solid var(--line); padding:18px 20px; }
+  .cart-total-row{ display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:1.1rem; margin-bottom:14px; }
+  .empty-note{ color:var(--ink-soft); font-size:.9rem; text-align:center; margin-top:40px; }
+  #closeCart{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
+  .checkout-status{ font-size:.85rem; margin-top:10px; text-align:center; }
+  .checkout-status.error{ color:var(--danger); }
+
+  #floatingCartBtn{
+    position:fixed; bottom:22px; right:22px; z-index:35;
+    background:var(--teal); color:#fff; border:none; border-radius:999px;
+    width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 24px rgba(20,20,20,.28); cursor:pointer; font-size:1.3rem;
+    opacity:0; visibility:hidden; transform:translateY(12px);
+    transition:opacity .25s ease, transform .25s ease, visibility .25s ease, background .2s ease;
+  }
+  #floatingCartBtn.visible{ opacity:1; visibility:visible; transform:translateY(0); }
+  #floatingCartBtn:hover{ background:var(--teal-deep); }
+  .fc-count{
+    position:absolute; top:-4px; right:-4px; background:var(--ink); color:#fff;
+    border-radius:999px; font-size:.68rem; font-weight:600; padding:2px 6px; min-width:18px;
+    text-align:center; font-family:'JetBrains Mono',monospace;
+  }
+  @media (max-width:520px){
+    #floatingCartBtn{ width:52px; height:52px; bottom:16px; right:16px; }
+  }
+
+  /* Bundle picker modal */
+  #pickerOverlay{
+    position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:50;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease;
+  }
+  #pickerOverlay.open{ opacity:1; visibility:visible; }
+  #pickerModal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
+    width:min(460px,90vw); max-height:80vh; background:var(--panel); border-radius:var(--radius);
+    z-index:51; box-shadow:0 24px 60px rgba(0,0,0,.3); display:flex; flex-direction:column;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
+  }
+  #pickerModal.open{ opacity:1; visibility:visible; transform:translate(-50%,-50%); }
+  .picker-head{ padding:20px 20px 4px; display:flex; justify-content:space-between; align-items:center; }
+  .picker-head h3{ font-size:1.1rem; }
+  .picker-sub{ padding:0 20px; color:var(--ink-soft); font-size:.85rem; margin:4px 0 12px; }
+  .picker-list{ padding:0 20px 8px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
+  .picker-option{
+    display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:8px;
+    padding:9px 12px; cursor:pointer; font-size:.9rem; transition:border-color .15s ease, background .15s ease;
+  }
+  .picker-option.checked{ border-color:var(--teal); background:#eaf7f4; }
+  .picker-option.disabled{ opacity:.4; cursor:not-allowed; }
+  .picker-foot{ padding:16px 20px 20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line); margin-top:8px; }
+  #closePicker{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
+
+  /* Image lightbox */
+  .card img{ cursor:zoom-in; }
+  #lightboxOverlay{
+    position:fixed; inset:0; background:rgba(15,15,15,.82); z-index:70;
+    opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
+    display:flex; align-items:center; justify-content:center; padding:32px;
+  }
+  #lightboxOverlay.open{ opacity:1; visibility:visible; }
+  #lightboxOverlay img{
+    max-width:min(900px,92vw); max-height:86vh; border-radius:10px;
+    box-shadow:0 30px 70px rgba(0,0,0,.5); cursor:default;
+    transform:scale(.85); opacity:0;
+    transition:transform .28s cubic-bezier(.2,.9,.3,1.2), opacity .22s ease;
+  }
+  #lightboxOverlay.open img{ transform:scale(1); opacity:1; }
+  #lightboxClose{
+    position:fixed; top:20px; right:24px; z-index:71;
+    background:rgba(255,255,255,.12); border:none; color:#fff; font-size:1.5rem;
+    width:42px; height:42px; border-radius:50%; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease, background .2s ease;
+  }
+  #lightboxOverlay.open + #lightboxClose{ opacity:1; visibility:visible; }
+  #lightboxClose:hover{ background:rgba(255,255,255,.24); }
+
+  /* Custom order form modal (shares the picker modal's overlay treatment) */
+  #customFormOverlay{
+    position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:50;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease;
+  }
+  #customFormOverlay.open{ opacity:1; visibility:visible; }
+  #customFormModal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
+    width:min(520px,92vw); max-height:85vh; background:var(--panel); border-radius:var(--radius);
+    z-index:51; box-shadow:0 24px 60px rgba(0,0,0,.3); display:flex; flex-direction:column;
+    opacity:0; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
+  }
+  #customFormModal.open{ opacity:1; visibility:visible; transform:translate(-50%,-50%); }
+  #closeCustomFormBtn{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
+  .custom-form-body{ padding:4px 20px 20px; overflow-y:auto; }
+
+  .picker-color-section{ padding:2px 20px 4px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; max-height:220px; }
+  .picker-color-item{ border-top:1px solid var(--line); padding-top:10px; }
+  .picker-color-item .picker-color-name{ font-size:.85rem; font-weight:600; margin-bottom:2px; }
+  .picker-color-item .picker-color-status{ font-size:.76rem; color:var(--ink-soft); margin-bottom:2px; }
+  .picker-color-item .color-strip{ padding:2px 2px 4px; }
+  .picker-color-item .swatch{ width:22px; height:22px; min-width:22px; }
+  .picker-color-item .finish-row{ margin-top:2px; margin-bottom:2px; }
+
+  @media (max-width:820px){
+    .hero{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width:520px){
+    .grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
+    .card img{ height:110px; }
+    .card-body{ padding:10px 10px 12px; gap:6px; }
+    .card h3{ font-size:.86rem; line-height:1.25; }
+    .variant-row{ gap:5px; }
+    .variant-opt{ min-width:0; padding:6px 6px; font-size:.7rem; }
+    .variant-opt .price{ font-size:.72rem; }
+    .card-foot{ gap:6px; }
+    .qty-input{ width:40px; padding:6px; font-size:.8rem; }
+    .add-btn{ padding:9px 8px; font-size:.76rem; }
+    section{ padding:36px 16px; }
+    .section-head h2{ font-size:1.5rem; }
+    .filter-bar{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
+    .swatch{ width:24px; height:24px; min-width:24px; }
+    .color-selected-label{ font-size:.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layers"></div>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <span class="eyebrow">Made-to-order · FDM 3D printing</span>
+      <h1>J&amp;J Advanced Designs</h1>
+    </div>
+    <nav>
+      <a href="#ready">Ready-Made</a>
+      <a href="#materials">Materials</a>
+      <a href="#bundles">Collections</a>
+      <a href="#soon" id="soonNavLink">Coming Soon</a>
+      <a href="#custom">Custom Orders</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button id="cartBtn" onclick="openCart()">Cart <span id="cartCount">0</span></button>
+    </nav>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="kicker">Layer by layer, made for you</div>
+      <h2>Custom 3D prints, built to your spec.</h2>
+      <p>Dragons, fidgets, gaming gear, and made-to-order creations — printed, finished, and shipped by hand. Pick single-color or go fully custom.</p>
+      <div class="hero-stats">
+        <div><div class="num">39</div><div class="lbl">Ready-made designs</div></div>
+        <div><div class="num">12</div><div class="lbl">Curated collections</div></div>
+        <div><div class="num">100%</div><div class="lbl">Made to order</div></div>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <h3>How custom orders work</h3>
+      <ol>
+        <li>Send your idea or reference photos</li>
+        <li>Get a design proof to approve</li>
+        <li>It's printed, finished, and shipped</li>
+      </ol>
+      <a class="btn" style="margin-top:16px; width:100%; text-align:center;" href="#custom">Start a custom order</a>
+    </div>
+  </div>
+</header>
+
+<section id="ready">
+  <div class="section-head">
+    <div class="tag">Catalog</div>
+    <h2>Ready-Made Products</h2>
+    <p>Every design ships in a single color or fully custom multi-color / personalized finish.</p>
+  </div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="grid" id="productGrid"></div>
+</section>
+
+<div class="layers"></div>
+
+<section id="materials">
+  <div class="section-head">
+    <div class="tag">Know your options</div>
+    <h2>Materials Guide</h2>
+    <p>Every color comes in one of these finishes. Here's what each one actually looks and feels like.</p>
+  </div>
+  <div class="grid materials-grid">
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Basic PLA</h3>
+        <p class="item-desc">Our standard filament — a clean, slightly satin finish with sharp detail and accurate color. The most reliable option, and available in the widest range of colors.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Silk PLA</h3>
+        <p class="item-desc">A high-shine, glossy finish that makes colors look rich and almost metallic. Adds a premium look, especially on dragons and display pieces.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Matte PLA</h3>
+        <p class="item-desc">A soft, non-reflective finish that hides layer lines and feels smooth to the touch. A more subtle, understated look than Silk or Basic.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Glow-in-the-Dark</h3>
+        <p class="item-desc">Charges under light exposure and glows on its own after dark. A fun option for kids' rooms, or anything you want to spot at night.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Multi-Color Blend</h3>
+        <p class="item-desc">A single spool that transitions between colors as it prints, creating a gradient effect at no extra cost. No two pieces print exactly alike.</p>
+      </div>
+    </div>
+    <div class="card material-card">
+      <div class="card-body">
+        <h3>Translucent / Crystal</h3>
+        <p class="item-desc">Light passes through this filament for a glassy, glowing look — ideal for lamps and anything meant to be lit from within.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="layers"></div>
+
+<section id="bundles">
+  <div class="section-head">
+    <div class="tag">Best value</div>
+    <h2>Collections</h2>
+    <p>Curated bundles at a fixed price — pick your favorites or grab a mystery box.</p>
+  </div>
+  <div class="grid" id="bundleGrid"></div>
+</section>
+
+<section id="soon">
+  <div class="section-head">
+    <div class="tag">In the works</div>
+    <h2>Coming Soon</h2>
+    <p>Designed and photographed — pricing is being finalized. Check back shortly.</p>
+  </div>
+  <div class="grid" id="soonGrid"></div>
+</section>
+
+<section id="custom">
+  <div class="section-head">
+    <div class="tag">One of one</div>
+    <h2>Custom 3D Printing</h2>
+    <p>Have an idea that's not in the catalog? It can probably be printed.</p>
+    <p>Custom pieces also make great party favors and gifts — birthdays, team events, or just something nobody else will have. Ask about bulk pricing for group orders.</p>
+  </div>
+  <ul class="how-list" style="margin-top:28px;">
+    <li><span class="how-num">1</span><span>Send your idea, sketch, or reference photos over email or social media.</span></li>
+    <li><span class="how-num">2</span><span>I model or source the design and send you a proof to approve before printing.</span></li>
+    <li><span class="how-num">3</span><span>Once approved, it's printed, cleaned up, and finished by hand.</span></li>
+    <li><span class="how-num">4</span><span>Packed carefully and shipped to your door.</span></li>
+  </ul>
+  <button class="btn" style="margin-top:24px;" onclick="openCustomForm()">Request a custom quote</button>
+</section>
+
+<div class="layers"></div>
+
+<section id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-head" style="margin-bottom:0;">
+        <div class="tag">The workshop</div>
+        <h2>About J&amp;J Advanced Designs</h2>
+      </div>
+      <p style="margin-top:16px;">Every piece here is printed, cleaned, and finished by hand — from pocket-sized fidgets to detailed cosplay armor. Ready-made designs ship fast; anything imaginable can be built as a custom order, matched to your vision from color to scale.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-head">
+    <div class="tag">Get in touch</div>
+    <h2>Contact</h2>
+  </div>
+  <div class="card" style="max-width:420px; margin-top:24px;">
+    <div class="card-body">
+      <p class="mono"><strong>Email:</strong> jacqjanson@icloud.com</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 J&amp;J Advanced Designs — All Rights Reserved</div>
+  <div class="mono">Payments processed securely via Square</div>
+</footer>
+
+<!-- Cart Drawer -->
+<div id="cartOverlay" onclick="closeCart()"></div>
+<div id="cartDrawer">
+  <div class="cart-head">
+    <h3>Your Cart</h3>
+    <button id="closeCart" onclick="closeCart()">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <button class="btn" style="width:100%;" id="checkoutBtn" onclick="checkout()">Checkout with Square</button>
+    <div class="checkout-status" id="checkoutStatus"></div>
+  </div>
+</div>
+
+<button id="floatingCartBtn" onclick="openCart()" aria-label="Open cart">
+  🛒<span id="fabCartCount" class="fc-count">0</span>
+</button>
+
+<!-- Bundle Picker Modal -->
+<div id="pickerOverlay" onclick="closePicker()"></div>
+<div id="pickerModal">
+  <div class="picker-head">
+    <h3 id="pickerTitle">Choose your items</h3>
+    <button id="closePicker" onclick="closePicker()">&times;</button>
+  </div>
+  <p class="picker-sub" id="pickerSub"></p>
+  <div class="picker-list" id="pickerList"></div>
+  <div class="picker-color-section" id="pickerColorSection"></div>
+  <div class="picker-foot">
+    <button class="btn secondary" onclick="closePicker()">Cancel</button>
+    <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
+  </div>
+</div>
+
+<!-- Custom Order Form Modal -->
+<div id="customFormOverlay" onclick="closeCustomForm()"></div>
+<div id="customFormModal">
+  <div class="picker-head">
+    <h3>Tell me about your idea</h3>
+    <button id="closeCustomFormBtn" onclick="closeCustomForm()">&times;</button>
+  </div>
+  <p class="picker-sub" style="padding-top:0;">I'll follow up by email with a quote and a proof before anything gets printed.</p>
+
+  <div class="custom-form-body">
+    <div data-fs-success class="form-success"></div>
+    <div data-fs-error class="form-error"></div>
+
+    <form id="customOrderForm">
+      <label class="co-label" for="co-name">Name</label>
+      <input type="text" id="co-name" name="name" data-fs-field required class="note-field" style="margin-bottom:12px;">
+      <span data-fs-error="name" class="field-error"></span>
+
+      <label class="co-label" for="co-email">Email</label>
+      <input type="email" id="co-email" name="email" data-fs-field required class="note-field" style="margin-bottom:12px;">
+      <span data-fs-error="email" class="field-error"></span>
+
+      <label class="co-label" for="co-phone">Phone (optional)</label>
+      <input type="tel" id="co-phone" name="phone" data-fs-field class="note-field" style="margin-bottom:12px;">
+
+      <label class="co-label" for="co-desc">What do you want made?</label>
+      <textarea id="co-desc" name="message" data-fs-field required class="note-field" rows="4" style="margin-bottom:12px; resize:vertical;" placeholder="Describe your idea — size, colors, timeline, anything reference-worthy. If you have reference photos, mention that and I'll follow up by email to get them."></textarea>
+      <span data-fs-error="message" class="field-error"></span>
+
+      <button type="submit" class="btn" data-fs-submit-btn style="width:100%;">Send Request</button>
+    </form>
+  </div>
+</div>
+
+<!-- Image Lightbox -->
+<div id="lightboxOverlay" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+</div>
+<button id="lightboxClose" onclick="closeLightbox()" aria-label="Close">&times;</button>
+
+<script>
+  // Custom order form -> Formspree (no backend needed for this one; it's
+  // just contact-form email delivery, not payment, so no Worker involved).
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#customOrderForm', formId: 'xbdnyrjj' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+<script>
+/* =========================================================
+   CONFIG — this MUST point at your live Cloudflare Worker.
+   ========================================================= */
+const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
+
+/* =========================================================
+   CATALOG
+   IMPORTANT: ids and prices here are for DISPLAY ONLY.
+   The real, authoritative prices live in worker.js on the
+   server. If you change a price, change it in BOTH places —
+   here (so the customer sees the right number) and in
+   worker.js (so that's actually what they get charged).
+   ========================================================= */
+/* =========================================================
+   Simple single/multi-color products
+   ========================================================= */
+const PRODUCTS = [
+  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00, maxColors:4,
+    desc:"A fully articulated snake that slithers and coils just like the real thing.",
+    images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
+  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
+    desc:"A brooding dragon with sharp spines and a fierce stare.",
+    images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
+  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00, maxColors:4,
+    desc:"Scales that shimmer and shift color with every angle of light.",
+    images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
+  { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
+    desc:"A pocket-sized dragon to carry on your keys or backpack.",
+    images:["images/shadowfang-keychain-2.jpg","images/shadowfang-4.jpg","images/shadowfang-5.jpg","images/shadowfang-dragon-keychain-mini-dragon.jpg"] },
+  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:4.99, multi:8.99,
+    desc:"A tiny T-Rex with a big bite, perfect for keys and bags.",
+    images:["images/tiny-chomp-1.jpg","images/tiny-chomp-keychain.jpg","images/tiny-chomp-keychain-2.jpg"] },
+  { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
+    desc:"A dragon-shaped lamp that stands watch over your desk or shelf.",
+    images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
+  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99, maxColors:4,
+    desc:"A slow-and-steady turtle with a surprisingly satisfying shell.",
+    images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
+  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99, maxColors:4,
+    desc:"A dragon egg that opens to reveal the hatchling hidden inside.",
+    images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
+  { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
+    desc:"A sturdy charging dock that keeps your controller ready to grab.",
+    images:["images/pikapause-controller-dock-1.jpg","images/pikapause-controller-dock-2.jpg"] },
+  { id:"hexarack", name:"HexaRack Gaming Organizer", category:"Gaming", single:59.99, multi:74.99, allowsNote:true,
+    desc:"Keep every game and controller organized in one hexagonal rack.",
+    images:["images/hexarack-1.jpg","images/hexarack-2.jpg"] },
+  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:9.99,
+    desc:"A smooth spinning sphere built for quiet, satisfying fidgeting.",
+    images:["images/gyro-sphere-spinner-1.jpg","images/gyro-sphere-spinner-2.jpg","images/gyro-sphere-spinner-3.jpg"] },
+  { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:17.99, multi:22.99,
+    desc:"A large star-tipped wand for anyone who wants a little magic in hand.",
+    images:["images/cosmic-star-wand-1.jpg","images/cosmic-star-wand-2.jpg","images/cosmic-star-wand-3.jpg"] },
+  { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:27.99, multi:32.99,
+    desc:"A snug, protective case that keeps your game cards safe on the go.",
+    images:["images/retrovault-nintendo-switch-game-case-1.jpg","images/retrovault-switch-game-case-2.jpg","images/retrovault-switch-game-case-3.jpg"] },
+  { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
+    desc:"A soft-glowing fairy lamp for a calm, whimsical nightlight.",
+    images:["images/dreamglow-fairy-1.jpg"] },
+  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:30.00, multi:35.00,
+    desc:"A twisting LED lamp that throws color across the room.",
+    images:["images/auratwist-1.jpg","images/auratwist-2.jpg"] },
+  { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:7.99, multi:12.99,
+    desc:"A ring-shaped fidget with eight points to spin between your fingers.",
+    images:["images/octospin-1.jpg","images/octospin-3.jpg","images/octospin2.jpg"] },
+  { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:14.99, multi:18.99,
+    desc:"A wand with an endless, twisting helix design.",
+    images:["images/infinity-helix-1.jpg","images/infinity-helix-2.jpg"] },
+  { id:"infinity-helixlink", name:"Infinity HelixLink", category:"Fidgets", single:12.99, multi:15.00,
+    desc:"An interlocking chain fidget that twists and links endlessly.",
+    images:["images/infinity-helixlink-1.jpg"] },
+  { id:"infinity-twist-passthrough", name:"Infinity Twist Passthrough", category:"Fidgets", single:12.99, multi:16.99,
+    desc:"A twisting fidget puzzle that flows smoothly from end to end.",
+    images:["images/infinity-twist-passthrough-2.jpg","images/infinity-twist-passthrough-3.jpg"] },
+  { id:"infinity-cubeshift", name:"Infinity CubeShift", category:"Fidgets", single:9.99, multi:16.99,
+    desc:"A shape-shifting cube fidget that never sits still.",
+    images:["images/infinity-cubeshift-1.jpg","images/infinity-cubeshift-2.jpg","images/infinity-cubeshift-3.jpg"] },
+  { id:"hyper-wheel", name:"Hyper Wheel", category:"Fidgets", single:14.99, multi:17.99,
+    desc:"A fast-spinning wheel fidget built for restless hands.",
+    images:["images/hyper-wheel-1.jpg","images/hyper-wheel-2.jpg","images/hyper-wheel-3.jpg"] },
+  { id:"clickstack", name:"ClickStack", category:"Fidgets", single:8.99, multi:11.99,
+    desc:"A stack of clicky pieces made for satisfying, repetitive fidgeting.",
+    images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
+  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
+    desc:"A flipping magnetic fidget with a satisfying snap.",
+    images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
+  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
+    desc:"A sleek, winged dragon built for speed.",
+    images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
+  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
+    desc:"A dragon with dramatic wings that fold and fan open.",
+    images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
+  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99, maxColors:4,
+    desc:"A snapping shark jaw fidget that's all bite.",
+    images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
+  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
+    desc:"A playful paint-splatter lamp that adds a pop of color to any room.",
+    images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
+  { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
+    desc:"An abstract, sculptural lamp that doubles as a conversation piece.",
+    images:["images/mndscape-lamp-1.jpg"] },
+  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
+    desc:"A dragon wreathed in dark, flame-like detailing.",
+    images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
+  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
+    desc:"A storm-toughened dragon with rugged, weathered scales.",
+    images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
+    desc:"A dragon lined with venomous spines down its back.", images:["images/venomspine-dragon-1.jpg"] },
+  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
+    desc:"A fiery dragon that looks ready to breathe flame.",
+    images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
+  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
+    desc:"A soft, squeezable bao-shaped fidget you can twist apart and back together.",
+    images:["images/twisty-bao-1.jpg"] },
+  { id:"zenclick", name:"ZenClick", category:"Fidgets", single:12.99, multi:15.99,
+    desc:"A smooth clicking orb designed for calm, repetitive fidgeting.",
+    images:["images/zenclick-orb-1.jpg","images/zenclick-orb-2.jpg"] },
+];
+
+/* =========================================================
+   Size + color products (Small/Large x Single/Multi = 4 prices)
+   ========================================================= */
+const SIZED_PRODUCTS = [
+  { id:"sensory-wiggle-ray", name:"Sensory Wiggle Ray", category:"Fidgets",
+    desc:"A wiggly stingray fidget with a satisfying sensory swim motion.",
+    images:["images/sensory-wiggle-ray-1.jpg","images/sensory-wiggle-ray-2.jpg"],
+    sizes:{ small:{ single:9.99, multi:14.99 }, large:{ single:15.00, multi:20.99 } } },
+  { id:"orbitcore-fidget", name:"OrbitCore Gear Fidget", category:"Fidgets",
+    desc:"A geared, rotating fidget that's oddly mesmerizing to spin.",
+    images:["images/orbitcore-1.jpg","images/orbitcore-2.jpg","images/orbitcore-3.jpg","images/orbitcore-4.jpg","images/orbitcore-5.jpg"],
+    sizes:{ small:{ single:4.99, multi:8.99 }, large:{ single:8.99, multi:12.99 } } },
+  { id:"chompasaurus", name:"Chompasaurus", category:"Creatures", maxColors:4,
+    desc:"A chomping dino fidget with a jaw that snaps shut.",
+    images:["images/chompasaurus-1.jpg","images/chompasaurus-4.jpg"],
+    sizes:{ small:{ single:7.99, multi:10.99 }, large:{ single:11.99, multi:14.99 } } },
+];
+
+/* =========================================================
+   Fixed single-price items — no color/size choice
+   ========================================================= */
+const SIMPLE_ITEMS = [
+  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99,
+    desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
+    images:["images/wack-a-mole-1.jpg"] },
+  { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99,
+    desc:"A hand-launched spinner that takes flight with three propellers.",
+    blurb:"Comes with three propellers.",
+    images:["images/skyspin-launcher-1.jpg"] },
+];
+
+const BUNDLES = [
+  { id:"dragon-collection", name:"Dragon Collection", blurb:"Pick 3 dragons of your choice.", price:50.00,
+    images:["images/prismscale-dragon-1.jpg"],
+    picks:{ count:3, label:"Pick 3 dragons", options:["shadowthorn-dragon","prismscale-dragon","scaleshift-egg","skyfang","stormwing","shadowflame-dragon","stormscale-dragon","venomspine-dragon","inferno-dragon"] } },
+  { id:"hatchling-collection", name:"Hatchling Collection", blurb:"1 large dragon, 1 dragon keychain, and a Tiny Chomp keychain.", price:39.99,
+    images:["images/scaleshift-dragon-egg-1.jpg"] },
+  { id:"gaming-collection", name:"Gaming Collection", blurb:"HexaRack and PikaPause, bundled together.", price:86.99,
+    images:["images/hexarack-1.jpg"] },
+  { id:"ultimate-fidget-box", name:"Ultimate Fidget Collection", blurb:"OrbitCore, GyroSphere, OctoSpin, and your choice of 1 wand.", price:50.00,
+    images:["images/octospin-1.jpg"],
+    picks:{ count:1, label:"Pick 1 wand", options:["cosmic-star-wand","infinity-helix-wand"] } },
+  { id:"ocean-collection", name:"Ocean Collection", blurb:"ShellShift Turtle, Sensory Wiggle Ray, and OctoSpin.", price:30.00,
+    images:["images/shellshift-turtle-1.jpg"] },
+  { id:"wizard-collection", name:"Wizard Collection", blurb:"Cosmic Star Wand and Infinity Helix Wand.", price:49.99,
+    images:["images/cosmic-star-wand-1.jpg"] },
+  { id:"home-collection", name:"Home Collection", blurb:"1 lamp plus 2 tea light lamps.", price:89.99,
+    images:["images/gaurdian-dragon-lamp-1.jpg"] },
+  { id:"pocket-collection", name:"Pocket Collection", blurb:"Tiny Chomp and ShadowFang keychains.", price:24.99,
+    images:["images/tiny-chomp-1.jpg"] },
+  { id:"mystery-fidget-box", name:"Mystery Fidget Box", blurb:"3 surprise fidgets.", price:19.99,
+    images:["images/gyro-sphere-spinner-1.jpg"] },
+  { id:"mystery-dragon-box", name:"Mystery Dragon Box", blurb:"1 surprise dragon, 1 surprise dragon-themed item, 1 surprise accessory.", price:59.99,
+    images:["images/shadowflame-dragon-1.jpg"] },
+  { id:"surprise-gamer-box", name:"Surprise Gamer Box", blurb:"A surprise set of gaming-themed accessories and organizers.", price:69.99,
+    images:["images/retrovault-nintendo-switch-game-case-1.jpg"] },
+  { id:"premium-mystery-box", name:"Premium Mystery Box", blurb:"6–9 premium products, surprise selection.", price:95.99,
+    images:["images/auratwist-1.jpg"] },
+];
+
+// Photographed, but not yet priced — display only, not purchasable.
+const COMING_SOON = [];
+
+const PLACEHOLDER_IMG = "data:image/svg+xml;utf8," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23e5e3db'/><text x='50%' y='50%' font-family='sans-serif' font-size='14' fill='%23928f85' text-anchor='middle'>Photo coming soon</text></svg>`
+);
+
+const money = n => "$" + n.toFixed(2);
+
+/* =========================================================
+   COLOR PALETTE — from actual supplier stock.
+   needsFinish:true = solid PLA available in Matte/Silk/Basic (customer picks finish).
+   Multi-color blends, glow, and crystal/translucent are their own fixed
+   filament type — no separate finish choice for those.
+   ========================================================= */
+const COLORS = [
+  // Solid PLA — available in Matte / Silk / Basic
+  { id:"red",           name:"Red",           hex:"#d1362f", needsFinish:true },
+  { id:"cyan",          name:"Cyan",          hex:"#3fc6d4", needsFinish:true },
+  { id:"navy-blue",     name:"Navy Blue",     hex:"#16244f", needsFinish:true },
+  { id:"basic-blue",    name:"Basic Blue",    hex:"#1f5fd6", needsFinish:true },
+  { id:"orange",        name:"Orange",        hex:"#e8792a", needsFinish:true },
+  { id:"yellow",        name:"Yellow",        hex:"#f2d43c", needsFinish:true },
+  { id:"banana-yellow", name:"Banana Yellow", hex:"#f0d868", needsFinish:true },
+  { id:"magenta",       name:"Magenta",       hex:"#c2276f", needsFinish:true },
+  { id:"light-pink",    name:"Light Pink",    hex:"#f5b8d0", needsFinish:true },
+  { id:"grey",          name:"Grey",          hex:"#8a8d91", needsFinish:true },
+  { id:"bright-green",  name:"Bright Green",  hex:"#4fd12a", needsFinish:true },
+  { id:"light-green",   name:"Light Green",   hex:"#a8e07a", needsFinish:true },
+  { id:"basic-green",   name:"Basic Green",   hex:"#1f7a33", needsFinish:true },
+  { id:"purple",        name:"Purple",        hex:"#6a3fb5", needsFinish:true },
+  { id:"cosmic-blue",   name:"Cosmic Blue",   hex:"#1a2f6b", needsFinish:true },
+  // Glow in the dark
+  { id:"glow-rainbow", name:"Rainbow Glow", gradient:"linear-gradient(90deg,#ff5252,#ffb347,#fff176,#69f0ae,#4fc3f7,#b388ff)" },
+  { id:"glow-blue",    name:"Blue Glow",    hex:"#4fa8e0" },
+  { id:"glow-green",   name:"Green Glow",   hex:"#7ee85a" },
+  { id:"glow-red",     name:"Red Glow",     hex:"#e8453a" },
+  { id:"glow-purple",  name:"Purple Glow",  hex:"#8a4fd1" },
+  // Triple-color silk transition blends
+  { id:"blend-blue-cyan-purple",  name:"Blue/Cyan/Purple Blend",  gradient:"linear-gradient(90deg,#1f5fd6,#3fc6d4,#6a3fb5)" },
+  { id:"blend-pink-purple-blue",  name:"Pink/Purple/Blue Blend",  gradient:"linear-gradient(90deg,#c2276f,#6a3fb5,#1f5fd6)" },
+  { id:"blend-green-orange-gold", name:"Green/Orange/Gold Blend", gradient:"linear-gradient(90deg,#2f8f3f,#e8792a,#c9a227)" },
+  { id:"blend-green-blue-purple", name:"Green/Blue/Purple Blend", gradient:"linear-gradient(90deg,#2f8f3f,#1f5fd6,#6a3fb5)" },
+  // Four-color silk blends
+  { id:"galaxy-purple", name:"Galaxy Purple", gradient:"linear-gradient(90deg,#6a3fb5,#3f5fd6,#c2276f,#b8bcc2)" },
+  { id:"cotton-candy",  name:"Cotton Candy",  gradient:"linear-gradient(90deg,#f5b8d0,#f7d0e0,#4fa8e0,#8a4fd1)" },
+  { id:"mermaid",       name:"Mermaid",       gradient:"linear-gradient(90deg,#1f5fd6,#3fd0c8,#2f8f3f,#6a3fb5)" },
+  { id:"sunset-gold",   name:"Sunset Gold",   gradient:"linear-gradient(90deg,#c9a227,#e8792a,#f5b8d0,#8a4fd1)" },
+  // Translucent / crystal
+  { id:"crystal-purple", name:"Crystal Purple", hex:"#b9a6e0" },
+  { id:"crystal-blue",   name:"Crystal Blue",   hex:"#a8d0e8" },
+  { id:"crystal-teal",   name:"Crystal Teal",   hex:"#a0e0d8" },
+  { id:"crystal-clear",  name:"Crystal Clear",  hex:"#eef2f2" },
+  { id:"crystal-pink",   name:"Crystal Pink",   hex:"#f0c8d8" },
+];
+
+const FINISHES = [
+  { id:"basic", name:"Basic PLA" },
+  { id:"silk",  name:"Silk" },
+  { id:"matte", name:"Matte" },
+];
+
+// productId -> array of selected color ids (order matters: [0]=primary, [1]=accent)
+let colorSelections = {};
+// productId -> chosen finish id (only meaningful when a needsFinish color is selected)
+let finishSelections = {};
+
+function getColorMax(id){
+  const input = document.querySelector(`input[name="variant-${id}"]:checked`);
+  const variant = input ? input.value : "single";
+  if(variant === "single") return 1;
+  const p = ALL_ITEMS.find(x=>x.id===id);
+  return (p && p.maxColors) ? p.maxColors : 2;
+}
+
+function colorStripHtml(id){
+  return `
+    <div class="color-strip-wrap">
+      <div class="color-strip" id="colorstrip-${id}">
+        ${COLORS.map(c => `
+          <button type="button" class="swatch" data-color="${c.id}" style="background:${c.gradient || c.hex}"
+            title="${c.name}" onclick="toggleColor('${id}','${c.id}')" aria-label="${c.name}"></button>
+        `).join("")}
+      </div>
+      <div class="color-selected-label" id="colorlabel-${id}">Choose a color</div>
+      <div class="finish-row" id="finishrow-${id}" style="display:none;">
+        ${FINISHES.map(f => `
+          <button type="button" class="finish-chip" data-finish="${f.id}" onclick="setFinish('${id}','${f.id}')">${f.name}</button>
+        `).join("")}
+      </div>
+    </div>`;
+}
+
+function resetColorSelection(id){
+  colorSelections[id] = [];
+  finishSelections[id] = "basic";
+  updateColorUI(id);
+}
+
+function toggleColor(id, colorId){
+  const max = getColorMax(id);
+  let sel = colorSelections[id] || [];
+  const idx = sel.indexOf(colorId);
+  if(idx !== -1){
+    sel.splice(idx,1);
+  } else {
+    if(sel.length >= max) sel.shift(); // drop oldest to make room (FIFO)
+    sel.push(colorId);
+  }
+  colorSelections[id] = sel;
+  updateColorUI(id);
+}
+
+function setFinish(id, finishId){
+  finishSelections[id] = finishId;
+  updateColorUI(id);
+}
+
+function updateColorUI(id){
+  const sel = colorSelections[id] || [];
+  const strip = document.getElementById(`colorstrip-${id}`);
+  if(!strip) return;
+  strip.querySelectorAll(".swatch").forEach(btn=>{
+    const cid = btn.dataset.color;
+    const idx = sel.indexOf(cid);
+    btn.classList.toggle("selected", idx !== -1);
+    btn.classList.toggle("accent", idx === 1);
+    btn.classList.toggle("third", idx === 2);
+    btn.classList.toggle("fourth", idx === 3);
+  });
+
+  const label = document.getElementById(`colorlabel-${id}`);
+  const max = getColorMax(id);
+  const ordinalLabels = ["Primary","Accent","3rd","4th"];
+  if(label){
+    if(sel.length === 0){
+      label.textContent = max > 1 ? `Choose up to ${max} colors` : "Choose a color";
+    } else if(max === 1){
+      const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+      label.textContent = `Color: ${names[0]}`;
+    } else {
+      const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+      const parts = names.map((n,i) => `${ordinalLabels[i]}: ${n}`);
+      label.textContent = parts.join(" · ") + (sel.length < max ? ` · up to ${max - sel.length} more (optional)` : "");
+    }
+  }
+
+  // Finish row only matters/shows when a selected color is solid PLA.
+  const needsFinish = sel.some(cid => {
+    const c = COLORS.find(x=>x.id===cid);
+    return c && c.needsFinish;
+  });
+  const finishRow = document.getElementById(`finishrow-${id}`);
+  if(finishRow){
+    finishRow.style.display = needsFinish ? "flex" : "none";
+    const current = finishSelections[id] || "basic";
+    finishRow.querySelectorAll(".finish-chip").forEach(chip=>{
+      chip.classList.toggle("active", chip.dataset.finish === current);
+    });
+  }
+
+  const btn = document.querySelector(`.card[data-id="${id}"] .add-btn`);
+  if(btn) btn.disabled = max === 1 ? sel.length !== 1 : sel.length === 0;
+}
+
+function colorNoteText(id){
+  const sel = colorSelections[id] || [];
+  const names = sel.map(cid => COLORS.find(c=>c.id===cid).name);
+  const ordinalLabels = ["Primary","Accent","Third","Fourth"];
+  let base = names.length > 1
+    ? names.map((n,i) => `${ordinalLabels[i]} ${n}`).join(", ")
+    : `Color ${names[0] || "?"}`;
+  const needsFinish = sel.some(cid => {
+    const c = COLORS.find(x=>x.id===cid);
+    return c && c.needsFinish;
+  });
+  if(needsFinish){
+    const finishName = FINISHES.find(f=>f.id===(finishSelections[id]||"basic")).name;
+    base += `, Finish ${finishName}`;
+  }
+  return base;
+}
+
+// One combined list drives the catalog grid + category filter.
+const ALL_ITEMS = [
+  ...PRODUCTS.map(p => ({ ...p, type:"variant" })),
+  ...SIZED_PRODUCTS.map(p => ({ ...p, type:"sized" })),
+  ...SIMPLE_ITEMS.map(p => ({ ...p, type:"simple" })),
+];
+const CATEGORIES = ["All", ...new Set(ALL_ITEMS.map(p=>p.category))];
+let activeCategory = "All";
+
+/* ---------- filter bar ---------- */
+function renderFilterBar(){
+  const bar = document.getElementById("filterBar");
+  bar.innerHTML = CATEGORIES.map(cat => {
+    const count = cat === "All" ? ALL_ITEMS.length : ALL_ITEMS.filter(p=>p.category===cat).length;
+    return `<button class="filter-chip${cat===activeCategory ? " active":""}" onclick="setCategory('${cat}')">${cat} <span class="count">${count}</span></button>`;
+  }).join("");
+}
+function setCategory(cat){
+  activeCategory = cat;
+  renderFilterBar();
+  renderProducts();
+  applyScrollReveal();
+}
+
+/* ---------- render product grid ---------- */
+function renderProducts(){
+  const grid = document.getElementById("productGrid");
+  const visible = activeCategory === "All" ? ALL_ITEMS : ALL_ITEMS.filter(p=>p.category===activeCategory);
+  grid.innerHTML = visible.map(p => {
+    const img = p.images[0] || PLACEHOLDER_IMG;
+
+    if(p.type === "variant"){
+      const noteField = p.allowsNote ? `
+        <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+              <span class="price mono">${money(p.single)}</span>
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+              <span class="price mono">${money(p.multi)}</span>
+            </label>
+          </div>
+          ${colorStripHtml(p.id)}
+          ${noteField}
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    if(p.type === "sized"){
+      const initialPrice = p.sizes.small.single;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="variant-row">
+            <label class="variant-opt selected" data-size="small">
+              <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
+              Small
+            </label>
+            <label class="variant-opt" data-size="large">
+              <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
+              Large
+            </label>
+          </div>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+            </label>
+          </div>
+          ${colorStripHtml(p.id)}
+          <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // type === "simple"
+    return `
+    <div class="card" data-id="${p.id}">
+      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+      <div class="card-body">
+        <h3>${p.name}</h3>
+        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+        ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
+        <div class="bundle-price mono">${money(p.price)}</div>
+        <div class="card-foot">
+          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+          <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  // Initialize color-picker state (and disabled Add button) for every card that has one.
+  visible.forEach(p=>{
+    if(p.type === "variant" || p.type === "sized") resetColorSelection(p.id);
+  });
+}
+
+function onVariantChange(id){
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  card.querySelectorAll(".variant-opt").forEach(el=>{
+    el.classList.toggle("selected", el.querySelector("input").checked);
+  });
+}
+
+function onSizedChange(id){
+  const p = SIZED_PRODUCTS.find(x=>x.id===id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  card.querySelectorAll(".variant-opt").forEach(el=>{
+    el.classList.toggle("selected", el.querySelector("input").checked);
+  });
+  const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
+  const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
+  document.getElementById(`price-${id}`).textContent = money(p.sizes[size][variant]);
+}
+
+function renderBundles(){
+  const grid = document.getElementById("bundleGrid");
+  grid.innerHTML = BUNDLES.map(b => {
+    const buttonHtml = b.picks
+      ? `<button class="btn add-btn" onclick="openPicker('${b.id}')">${b.picks.label}</button>`
+      : `<button class="btn add-btn" onclick="addBundleToCart('${b.id}')">Add to Cart</button>`;
+    return `
+    <div class="card bundle-card">
+      <img src="${b.images[0] || PLACEHOLDER_IMG}" alt="${b.name}" loading="lazy" onclick="openLightbox(this)">
+      <div class="card-body">
+        <h3>${b.name}</h3>
+        <p style="color:var(--ink-soft); font-size:.88rem; margin:0;">${b.blurb}</p>
+        <div class="bundle-price">${money(b.price)}</div>
+        <div class="card-foot">
+          ${b.picks ? "" : `<input type="number" class="qty-input" id="qty-${b.id}" value="1" min="1" max="20">`}
+          ${buttonHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderComingSoon(){
+  const section = document.getElementById("soon");
+  const navLink = document.getElementById("soonNavLink");
+  if(COMING_SOON.length === 0){
+    if(section) section.style.display = "none";
+    if(navLink) navLink.style.display = "none";
+    return;
+  }
+  const grid = document.getElementById("soonGrid");
+  grid.innerHTML = COMING_SOON.map(item => `
+    <div class="card coming-soon-card">
+      <span class="coming-soon-badge">Price coming soon</span>
+      <img src="${item.images[0] || PLACEHOLDER_IMG}" alt="${item.name}" loading="lazy" onclick="openLightbox(this)">
+      <div class="card-body"><h3>${item.name}</h3></div>
+    </div>`).join("");
+}
+
+/* ---------- cart ---------- */
+let cart = [];
+
+function addProductToCart(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
+  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  const max = getColorMax(id);
+  if(max === 1 ? (colorSelections[id]||[]).length !== 1 : (colorSelections[id]||[]).length === 0) return; // guard; button should already prevent this
+  const colorText = colorNoteText(id);
+  const noteEl = document.getElementById(`note-${id}`);
+  const customNote = noteEl ? noteEl.value.trim().slice(0,40) : "";
+  const fullNote = customNote ? `${colorText} - ${customNote}` : colorText;
+  const unitPrice = variant === "multi" ? p.multi : p.single;
+
+  cart.push({
+    id, kind:"product", name:p.name,
+    variantLabel: variant === "multi" ? "Multi/Custom" : "Single Color",
+    variant, size:null, note:fullNote, unitPrice, qty,
+    image: p.images[0] || PLACEHOLDER_IMG,
+  });
+  flashAdded(id);
+  renderCart();
+}
+
+function addSizedToCart(id){
+  const p = SIZED_PRODUCTS.find(x=>x.id===id);
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
+  const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
+  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  const max = getColorMax(id);
+  if(max === 1 ? (colorSelections[id]||[]).length !== 1 : (colorSelections[id]||[]).length === 0) return; // guard; button should already prevent this
+  const unitPrice = p.sizes[size][variant];
+
+  cart.push({
+    id, kind:"sized", name:p.name,
+    variantLabel: `${size === "large" ? "Large" : "Small"} · ${variant === "multi" ? "Multi/Custom" : "Single Color"}`,
+    variant, size, note: colorNoteText(id), unitPrice, qty,
+    image: p.images[0] || PLACEHOLDER_IMG,
+  });
+  flashAdded(id);
+  renderCart();
+}
+
+function addSimpleToCart(id){
+  const p = SIMPLE_ITEMS.find(x=>x.id===id);
+  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  cart.push({
+    id, kind:"simple", name:p.name, variantLabel:"", variant:null, size:null, note:"",
+    unitPrice:p.price, qty, image:p.images[0] || PLACEHOLDER_IMG,
+  });
+  flashAdded(id);
+  renderCart();
+}
+
+function addBundleToCart(id, note){
+  const b = BUNDLES.find(x=>x.id===id);
+  const qty = b.picks ? 1 : Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
+  cart.push({
+    id, kind:"bundle", name:b.name, variantLabel:"", variant:null, size:null, note: note || "",
+    unitPrice:b.price, qty, image:b.images[0] || PLACEHOLDER_IMG,
+  });
+  renderCart();
+  openCart();
+}
+
+function flashAdded(id){
+  const btn = document.querySelector(`.card[data-id="${id}"] .add-btn`);
+  const original = btn.textContent;
+  btn.textContent = "Added ✓";
+  btn.classList.add("just-added");
+  setTimeout(()=>{
+    btn.textContent = original;
+    btn.classList.remove("just-added");
+  }, 900);
+}
+
+function removeFromCart(index){
+  cart.splice(index,1);
+  renderCart();
+}
+
+function renderCart(){
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById("cartCount").textContent = count;
+  document.getElementById("fabCartCount").textContent = count;
+  const wrap = document.getElementById("cartItems");
+  if(cart.length === 0){
+    wrap.innerHTML = `<div class="empty-note">Your cart is empty.<br>Add something from the catalog.</div>`;
+  } else {
+    wrap.innerHTML = cart.map((item,i)=>`
+      <div class="cart-item">
+        <img src="${item.image}" alt="">
+        <div class="cart-item-info">
+          <div class="name">${item.name}</div>
+          <div class="meta">${item.variantLabel}${item.note ? " — \"" + item.note + "\"" : ""} · Qty ${item.qty}</div>
+          <div class="row">
+            <span class="mono">${money(item.unitPrice * item.qty)}</span>
+            <button class="remove-link" onclick="removeFromCart(${i})">Remove</button>
+          </div>
+        </div>
+      </div>`).join("");
+  }
+  const total = cart.reduce((s,i)=>s+i.unitPrice*i.qty,0);
+  document.getElementById("cartTotal").textContent = money(total);
+  document.getElementById("checkoutBtn").disabled = cart.length === 0;
+}
+
+function openCart(){
+  document.getElementById("cartOverlay").classList.add("open");
+  document.getElementById("cartDrawer").classList.add("open");
+}
+function closeCart(){
+  document.getElementById("cartOverlay").classList.remove("open");
+  document.getElementById("cartDrawer").classList.remove("open");
+}
+
+/* ---------- checkout ---------- */
+async function checkout(){
+  if(cart.length === 0) return;
+  const btn = document.getElementById("checkoutBtn");
+  const status = document.getElementById("checkoutStatus");
+  status.textContent = "";
+  status.className = "checkout-status";
+  btn.disabled = true;
+  btn.textContent = "Contacting Square…";
+
+  // NOTE: we only ever send id/kind/variant/size/qty/note — never a price.
+  // The real price is looked up server-side from worker.js's CATALOG.
+  const payload = {
+    cart: cart.map(item => ({
+      id: item.id,
+      kind: item.kind,
+      variant: item.variant || undefined,
+      size: item.size || undefined,
+      qty: item.qty,
+      note: item.note || undefined,
+    })),
+  };
+
+  try{
+    const res = await fetch(CHECKOUT_ENDPOINT, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if(res.ok && data.url){
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || "Checkout failed. Please try again.");
+    }
+  } catch(err){
+    status.textContent = "Something went wrong: " + err.message;
+    status.className = "checkout-status error";
+    btn.disabled = false;
+    btn.textContent = "Checkout with Square";
+  }
+}
+
+/* ---------- bundle picker ---------- */
+let pickerState = null; // { bundleId, count, selected:Set, itemColors:{itemId:[colorId,...]}, itemFinishes:{itemId:finishId} }
+
+function getItemMaxColors(itemId){
+  const p = ALL_ITEMS.find(x=>x.id===itemId);
+  return (p && p.maxColors) ? p.maxColors : 2;
+}
+
+function openPicker(bundleId){
+  const b = BUNDLES.find(x=>x.id===bundleId);
+  if(!b || !b.picks) return;
+  pickerState = { bundleId, count:b.picks.count, selected:new Set(), itemColors:{}, itemFinishes:{} };
+
+  document.getElementById("pickerTitle").textContent = b.name;
+  document.getElementById("pickerSub").textContent =
+    `${b.picks.label} — select exactly ${b.picks.count}.`;
+
+  const optionItems = b.picks.options.map(optId => {
+    const p = ALL_ITEMS.find(x=>x.id===optId);
+    return { id:optId, name: p ? p.name : optId };
+  });
+
+  const list = document.getElementById("pickerList");
+  list.innerHTML = optionItems.map(opt => `
+    <label class="picker-option" data-opt="${opt.id}">
+      <input type="checkbox" value="${opt.id}" onchange="onPickerToggle('${opt.id}')">
+      ${opt.name}
+    </label>`).join("");
+
+  document.getElementById("pickerColorSection").innerHTML = "";
+  document.getElementById("pickerOverlay").classList.add("open");
+  document.getElementById("pickerModal").classList.add("open");
+  updatePickerConfirmState();
+}
+
+function onPickerToggle(optId){
+  if(!pickerState) return;
+  const checked = pickerState.selected.has(optId);
+  if(checked){
+    pickerState.selected.delete(optId);
+    delete pickerState.itemColors[optId];
+    delete pickerState.itemFinishes[optId];
+  } else {
+    if(pickerState.selected.size >= pickerState.count) return; // ignore, at limit
+    pickerState.selected.add(optId);
+    pickerState.itemColors[optId] = [];
+    pickerState.itemFinishes[optId] = "basic";
+  }
+  updatePickerConfirmState();
+}
+
+function pickerToggleColor(itemId, colorId){
+  if(!pickerState) return;
+  const max = getItemMaxColors(itemId);
+  let sel = pickerState.itemColors[itemId] || [];
+  const idx = sel.indexOf(colorId);
+  if(idx !== -1){
+    sel.splice(idx,1);
+  } else {
+    if(sel.length >= max) sel.shift(); // drop oldest to make room (FIFO)
+    sel.push(colorId);
+  }
+  pickerState.itemColors[itemId] = sel;
+  updatePickerConfirmState();
+}
+
+function pickerSetFinish(itemId, finishId){
+  if(!pickerState) return;
+  pickerState.itemFinishes[itemId] = finishId;
+  updatePickerConfirmState();
+}
+
+const ORDINAL_LABELS = ["Primary","Accent","3rd","4th"];
+
+function renderPickerColorSection(){
+  const section = document.getElementById("pickerColorSection");
+  const selectedIds = [...pickerState.selected];
+  if(selectedIds.length === 0){
+    section.innerHTML = "";
+    return;
+  }
+  section.innerHTML = selectedIds.map(itemId => {
+    const p = ALL_ITEMS.find(x=>x.id===itemId);
+    const name = p ? p.name : itemId;
+    const max = getItemMaxColors(itemId);
+    const sel = pickerState.itemColors[itemId] || [];
+    const needsFinish = sel.some(cid => {
+      const c = COLORS.find(x=>x.id===cid);
+      return c && c.needsFinish;
+    });
+    const finish = pickerState.itemFinishes[itemId] || "basic";
+
+    const statusText = sel.length === 0
+      ? `Choose up to ${max} color${max>1?"s":""}`
+      : sel.map((cid,i) => `${ORDINAL_LABELS[i]}: ${COLORS.find(c=>c.id===cid).name}`).join(" · ")
+        + (sel.length < max ? ` · up to ${max-sel.length} more (optional)` : "");
+
+    return `
+      <div class="picker-color-item">
+        <div class="picker-color-name">${name}</div>
+        <div class="picker-color-status">${statusText}</div>
+        <div class="color-strip">
+          ${COLORS.map(c => {
+            const idx = sel.indexOf(c.id);
+            const cls = idx === -1 ? "" : idx === 1 ? " selected accent" : idx === 2 ? " selected third" : idx === 3 ? " selected fourth" : " selected";
+            return `<button type="button" class="swatch${cls}" style="background:${c.gradient || c.hex}"
+              title="${c.name}" onclick="pickerToggleColor('${itemId}','${c.id}')" aria-label="${c.name}"></button>`;
+          }).join("")}
+        </div>
+        ${needsFinish ? `
+        <div class="finish-row" style="display:flex;">
+          ${FINISHES.map(f => `<button type="button" class="finish-chip${f.id===finish?" active":""}" onclick="pickerSetFinish('${itemId}','${f.id}')">${f.name}</button>`).join("")}
+        </div>` : ""}
+      </div>`;
+  }).join("");
+}
+
+function updatePickerConfirmState(){
+  const atLimit = pickerState.selected.size >= pickerState.count;
+  document.querySelectorAll(".picker-option").forEach(el=>{
+    const optId = el.dataset.opt;
+    const isChecked = pickerState.selected.has(optId);
+    el.classList.toggle("checked", isChecked);
+    el.classList.toggle("disabled", !isChecked && atLimit);
+    const input = el.querySelector("input");
+    input.checked = isChecked;
+    input.disabled = !isChecked && atLimit;
+  });
+
+  renderPickerColorSection();
+
+  const countDone = pickerState.selected.size === pickerState.count;
+  const allColored = [...pickerState.selected].every(id => (pickerState.itemColors[id]||[]).length > 0);
+
+  document.getElementById("pickerSub").textContent = !countDone
+    ? `Selected ${pickerState.selected.size} of ${pickerState.count}.`
+    : allColored
+      ? `All set — ${pickerState.count} chosen, colors picked.`
+      : `Now choose at least 1 color for each.`;
+
+  document.getElementById("pickerConfirmBtn").disabled = !(countDone && allColored);
+}
+
+function confirmPicker(){
+  if(!pickerState) return;
+  const countDone = pickerState.selected.size === pickerState.count;
+  const allColored = [...pickerState.selected].every(id => (pickerState.itemColors[id]||[]).length > 0);
+  if(!countDone || !allColored) return;
+
+  const parts = [...pickerState.selected].map(id => {
+    const p = ALL_ITEMS.find(x=>x.id===id);
+    const name = p ? p.name : id;
+    const sel = pickerState.itemColors[id] || [];
+    const colorText = sel.map((cid,i) => `${ORDINAL_LABELS[i]} ${COLORS.find(c=>c.id===cid).name}`).join(", ");
+    const needsFinish = sel.some(cid => {
+      const c = COLORS.find(x=>x.id===cid);
+      return c && c.needsFinish;
+    });
+    const finishText = needsFinish ? `, Finish ${FINISHES.find(f=>f.id===(pickerState.itemFinishes[id]||"basic")).name}` : "";
+    return `${name} (${colorText}${finishText})`;
+  });
+  addBundleToCart(pickerState.bundleId, parts.join(", "));
+  closePicker();
+}
+
+function closePicker(){
+  document.getElementById("pickerOverlay").classList.remove("open");
+  document.getElementById("pickerModal").classList.remove("open");
+  pickerState = null;
+}
+
+/* ---------- scroll reveal ---------- */
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("visible");
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold:0.12 });
+
+function applyScrollReveal(){
+  document.querySelectorAll(".card:not(.reveal)").forEach(el=>{
+    el.classList.add("reveal");
+    revealObserver.observe(el);
+  });
+  document.querySelectorAll(".section-head:not(.reveal)").forEach(el=>{
+    el.classList.add("reveal");
+    revealObserver.observe(el);
+  });
+}
+
+/* ---------- custom order form modal ---------- */
+function openCustomForm(){
+  document.getElementById("customFormOverlay").classList.add("open");
+  document.getElementById("customFormModal").classList.add("open");
+}
+function closeCustomForm(){
+  document.getElementById("customFormOverlay").classList.remove("open");
+  document.getElementById("customFormModal").classList.remove("open");
+}
+
+/* ---------- image lightbox ---------- */
+function openLightbox(imgEl){
+  const overlay = document.getElementById("lightboxOverlay");
+  const target = document.getElementById("lightboxImg");
+  target.src = imgEl.src;
+  target.alt = imgEl.alt || "";
+  overlay.classList.add("open");
+}
+function closeLightbox(){
+  document.getElementById("lightboxOverlay").classList.remove("open");
+}
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") closeLightbox();
+});
+
+/* ---------- 3D header text tilt ---------- */
+function setupBrandTilt(){
+  const brandWrap = document.querySelector(".brand");
+  const brandH1 = document.querySelector(".brand h1");
+  if(!brandWrap || !brandH1) return;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if(reducedMotion) return; // leave it static, no animation at all
+
+  if(hasFinePointer){
+    brandWrap.addEventListener("mousemove", (e)=>{
+      const rect = brandWrap.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      brandH1.style.transform = `rotateX(${-y*22}deg) rotateY(${x*22}deg)`;
+    });
+    brandWrap.addEventListener("mouseleave", ()=>{
+      brandH1.style.transform = "rotateX(0deg) rotateY(0deg)";
+    });
+  } else {
+    brandH1.classList.add("auto-tilt"); // phones/tablets: no cursor, so gently animate instead
+  }
+}
+setupBrandTilt();
+
+/* ---------- floating cart button ---------- */
+function updateFloatingCartVisibility(){
+  const fab = document.getElementById("floatingCartBtn");
+  fab.classList.toggle("visible", window.scrollY > 420);
+}
+window.addEventListener("scroll", updateFloatingCartVisibility, { passive:true });
+updateFloatingCartVisibility();
+
+renderFilterBar();
+renderProducts();
+renderBundles();
+renderComingSoon();
+renderCart();
+applyScrollReveal();
+</script>
+</body>
+</html>
