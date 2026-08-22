@@ -55,14 +55,14 @@
   }
   .brand h1{
     font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
-    transition:transform .12s ease-out; margin:0;
-  }
-  .brand-logo{
-    display:block; height:220px; width:auto;
-    filter:drop-shadow(3px 5px 10px rgba(0,0,0,.5));
-  }
-  @media (max-width:520px){
-    .brand-logo{ height:144px; }
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
   }
   @keyframes idleTilt3d{
     0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
@@ -398,7 +398,7 @@
   <div class="topbar">
     <div class="brand">
       <span class="eyebrow">Made-to-order · FDM 3D printing</span>
-      <h1><img src="images/logo-jj-applied-designs.png" alt="J&amp;J Applied Designs — You Imagine It, We Print It" class="brand-logo"></h1>
+      <h1>J&amp;J Applied Designs</h1>
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>
@@ -839,10 +839,8 @@ const VINYL_ITEMS = [
     desc:"A 12\" vinyl-record-sized print. Pick a design below.",
     images:["images/vinyl-mj-billiejean-1.jpg","images/vinyl-spiral-1.jpg"],
     designs:[
-      { id:"mj-billiejean",    name:"Michael Jackson — Billie Jean",  image:"images/vinyl-mj-billiejean-1.jpg" },
-      { id:"spiral",           name:"Spiral Portrait",                image:"images/vinyl-spiral-1.jpg" },
-      { id:"freddie-mercury",  name:"Freddie Mercury — Don't Stop Me Now", image:"images/vinyl-freddie-mercury-1.jpg" },
-      { id:"kendrick",         name:"Kendrick Lamar",                 image:"images/vinyl-kendrick-1.jpg" },
+      { id:"mj-billiejean", name:"Michael Jackson — Billie Jean", image:"images/vinyl-mj-billiejean-1.jpg" },
+      { id:"spiral",        name:"Spiral Portrait",               image:"images/vinyl-spiral-1.jpg" },
     ] },
 ];
 
@@ -861,10 +859,6 @@ const SIMPLE_ITEMS = [
     desc:"A splattered die-shaped LED lamp with a remote-controlled color light kit.",
     blurb:"",
     images:["images/splat-dice-lamp-1.jpg"] },
-  { id:"mystery-dragon-egg", name:"Mystery Dragon Egg", category:"Dragons", price:22.00,
-    desc:"An iridescent, scaled dragon egg that opens to reveal a hidden mini dragon inside. Shell color and dragon are a surprise.",
-    blurb:"",
-    images:["images/mystery-dragon-egg-1.jpg"] },
 ];
 
 const BUNDLES = [

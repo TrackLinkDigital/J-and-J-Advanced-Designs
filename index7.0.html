@@ -55,14 +55,14 @@
   }
   .brand h1{
     font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
-    transition:transform .12s ease-out; margin:0;
-  }
-  .brand-logo{
-    display:block; height:220px; width:auto;
-    filter:drop-shadow(3px 5px 10px rgba(0,0,0,.5));
-  }
-  @media (max-width:520px){
-    .brand-logo{ height:144px; }
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
   }
   @keyframes idleTilt3d{
     0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
@@ -398,7 +398,7 @@
   <div class="topbar">
     <div class="brand">
       <span class="eyebrow">Made-to-order · FDM 3D printing</span>
-      <h1><img src="images/logo-jj-applied-designs.png" alt="J&amp;J Applied Designs — You Imagine It, We Print It" class="brand-logo"></h1>
+      <h1>J&amp;J Applied Designs</h1>
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>

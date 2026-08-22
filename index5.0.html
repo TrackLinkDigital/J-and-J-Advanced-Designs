@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>J&J Applied Designs — Custom 3D Printing</title>
+<title>J&J Advanced Designs — Custom 3D Printing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -55,14 +55,14 @@
   }
   .brand h1{
     font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
-    transition:transform .12s ease-out; margin:0;
-  }
-  .brand-logo{
-    display:block; height:220px; width:auto;
-    filter:drop-shadow(3px 5px 10px rgba(0,0,0,.5));
-  }
-  @media (max-width:520px){
-    .brand-logo{ height:144px; }
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
   }
   @keyframes idleTilt3d{
     0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
@@ -398,7 +398,7 @@
   <div class="topbar">
     <div class="brand">
       <span class="eyebrow">Made-to-order · FDM 3D printing</span>
-      <h1><img src="images/logo-jj-applied-designs.png" alt="J&amp;J Applied Designs — You Imagine It, We Print It" class="brand-logo"></h1>
+      <h1>J&amp;J Advanced Designs</h1>
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>
@@ -542,7 +542,7 @@
     <div>
       <div class="section-head" style="margin-bottom:0;">
         <div class="tag">The workshop</div>
-        <h2>About J&amp;J Applied Designs</h2>
+        <h2>About J&amp;J Advanced Designs</h2>
       </div>
       <p style="margin-top:16px;">Every piece here is printed, cleaned, and finished by hand — from pocket-sized fidgets to detailed cosplay armor. Ready-made designs ship fast; anything imaginable can be built as a custom order, matched to your vision from color to scale.</p>
     </div>
@@ -562,7 +562,7 @@
 </section>
 
 <footer>
-  <div>© 2026 J&amp;J Applied Designs — All Rights Reserved</div>
+  <div>© 2026 J&amp;J Advanced Designs — All Rights Reserved</div>
   <div class="mono">Payments processed securely via Square</div>
 </footer>
 
@@ -667,52 +667,52 @@ const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
    Simple single/multi-color products
    ========================================================= */
 const PRODUCTS = [
-  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:12.00, multi:16.00, maxColors:4,
+  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00, maxColors:4,
     desc:"A fully articulated snake that slithers and coils just like the real thing.",
     images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
-  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A brooding dragon with sharp spines and a fierce stare.",
     images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
-  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00, maxColors:4,
     desc:"Scales that shimmer and shift color with every angle of light.",
     images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
   { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
     desc:"A pocket-sized dragon to carry on your keys or backpack.",
     images:["images/shadowfang-keychain-2.jpg","images/shadowfang-4.jpg","images/shadowfang-5.jpg","images/shadowfang-dragon-keychain-mini-dragon.jpg"] },
-  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:5.00, multi:8.99,
+  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:4.99, multi:8.99,
     desc:"A tiny T-Rex with a big bite, perfect for keys and bags.",
     images:["images/tiny-chomp-1.jpg","images/tiny-chomp-keychain.jpg","images/tiny-chomp-keychain-2.jpg"] },
   { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
     desc:"A dragon-shaped lamp that stands watch over your desk or shelf.",
     images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
-  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:10.00, multi:15.00, maxColors:4,
+  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99, maxColors:4,
     desc:"A slow-and-steady turtle with a surprisingly satisfying shell.",
     images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
-  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:12.99, multi:15.00, maxColors:4,
+  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99, maxColors:4,
     desc:"A dragon egg that opens to reveal the hatchling hidden inside.",
     images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
-  { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:45.00, allowsNote:true,
+  { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
     desc:"A sturdy charging dock that keeps your controller ready to grab.",
     images:["images/pikapause-controller-dock-1.jpg","images/pikapause-controller-dock-2.jpg"] },
   { id:"hexarack", name:"HexaRack Gaming Organizer", category:"Gaming", single:59.99, multi:74.99, allowsNote:true,
     desc:"Keep every game and controller organized in one hexagonal rack.",
     images:["images/hexarack-1.jpg","images/hexarack-2.jpg"] },
-  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:8.00,
+  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:9.99,
     desc:"A smooth spinning sphere built for quiet, satisfying fidgeting.",
     images:["images/gyro-sphere-spinner-1.jpg","images/gyro-sphere-spinner-2.jpg","images/gyro-sphere-spinner-3.jpg"] },
-  { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:10.00, multi:14.00,
+  { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:17.99, multi:22.99,
     desc:"A large star-tipped wand for anyone who wants a little magic in hand.",
     images:["images/cosmic-star-wand-1.jpg","images/cosmic-star-wand-2.jpg","images/cosmic-star-wand-3.jpg"] },
-  { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:16.00, multi:20.00,
+  { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:27.99, multi:32.99,
     desc:"A snug, protective case that keeps your game cards safe on the go.",
     images:["images/retrovault-nintendo-switch-game-case-1.jpg","images/retrovault-switch-game-case-2.jpg","images/retrovault-switch-game-case-3.jpg"] },
   { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
     desc:"A soft-glowing fairy lamp for a calm, whimsical nightlight.",
     images:["images/dreamglow-fairy-1.jpg"] },
-  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
+  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:30.00, multi:35.00,
     desc:"A twisting LED lamp that throws color across the room.",
     images:["images/auratwist-1.jpg","images/auratwist-2.jpg"] },
-  { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:5.00, multi:8.00,
+  { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:7.99, multi:12.99,
     desc:"A ring-shaped fidget with eight points to spin between your fingers.",
     images:["images/octospin-1.jpg","images/octospin-3.jpg","images/octospin2.jpg"] },
   { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:14.99, multi:18.99,
@@ -733,44 +733,45 @@ const PRODUCTS = [
   { id:"clickstack", name:"ClickStack", category:"Fidgets", single:8.99, multi:11.99,
     desc:"A stack of clicky pieces made for satisfying, repetitive fidgeting.",
     images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
-  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:10.99, multi:14.99, allowsNote:true,
+  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
     desc:"A flipping magnetic fidget with a satisfying snap.",
     images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
-  { id:"skyfang", name:"SkyFang", category:"Dragons", single:12.99, multi:16.99, maxColors:4,
+  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A sleek, winged dragon built for speed.",
     images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
-  { id:"stormwing", name:"StormWing", category:"Dragons", single:12.99, multi:16.99, maxColors:4,
+  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A dragon with dramatic wings that fold and fan open.",
     images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
-  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:8.99, multi:13.99, maxColors:4,
+  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99, maxColors:4,
     desc:"A snapping shark jaw fidget that's all bite.",
     images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
-  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:19.99, multi:25.99, allowsNote:true,
+  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
     desc:"A playful paint-splatter lamp that adds a pop of color to any room.",
     images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
   { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
     desc:"An abstract, sculptural lamp that doubles as a conversation piece.",
     images:["images/mndscape-lamp-1.jpg"] },
-  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
     desc:"A dragon wreathed in dark, flame-like detailing.",
     images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
-  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A storm-toughened dragon with rugged, weathered scales.",
     images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
-  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A dragon lined with venomous spines down its back.", images:["images/venomspine-dragon-1.jpg"] },
-  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A fiery dragon that looks ready to breathe flame.",
     images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
-  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:10.00, multi:13.99,
+  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
     desc:"A soft, squeezable bao-shaped fidget you can twist apart and back together.",
     images:["images/twisty-bao-1.jpg"] },
   { id:"zenclick", name:"ZenClick", category:"Fidgets", single:12.99, multi:15.99,
     desc:"A smooth clicking orb designed for calm, repetitive fidgeting.",
     images:["images/zenclick-orb-1.jpg","images/zenclick-orb-2.jpg"] },
-  // PRICE NOT CONFIRMED BY CUSTOMER — matched to the existing dragon tier
-  // as a placeholder ($19.99/$24.99). Correct the price before this goes live.
-  { id:"mystical-unicorn-dragon", name:"Mystical Unicorn Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
+  // PRICE + NAME NOT CONFIRMED BY CUSTOMER — matched to the existing
+  // dragon tier as a placeholder ($19.99/$24.99, same as ShadowFlame
+  // Dragon). Rename the id/name and correct the price before this goes live.
+  { id:"new-dragon-name-tbd", name:"New Dragon (Name TBD)", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
     desc:"An articulated dragon with a spiked mane and tail fin.",
     images:["images/new-dragon-1.jpg"] },
   // Flat $10, one color only — no Multi/Custom option shown for this item.
@@ -812,37 +813,9 @@ const FRAMED_ITEMS = [
     images:["images/hueforge-tmnt-1.jpg","images/hueforge-2pac-1.jpg","images/hueforge-elvis-1.jpg"],
     options:{ none:35.00, frame:45.00, led:60.00 },
     designs:[
-      { id:"tmnt",         name:"TMNT",                    image:"images/hueforge-tmnt-1.jpg" },
-      { id:"2pac",         name:"2Pac",                     image:"images/hueforge-2pac-1.jpg" },
-      { id:"elvis",        name:"Elvis",                    image:"images/hueforge-elvis-1.jpg" },
-      { id:"lilwayne-green",   name:"Lil Wayne (Green Smoke)",  image:"images/hueforge-lilwayne-green-1.jpg" },
-      { id:"snoop-yellow",     name:"Snoop Dogg (Yellow)",      image:"images/hueforge-snoop-yellow-1.jpg" },
-      { id:"mj-healworld",     name:"Michael Jackson (Heal the World)", image:"images/hueforge-mj-healworld-1.jpg" },
-      { id:"mj-gold",          name:"Michael Jackson (Gold Silhouette)", image:"images/hueforge-mj-gold-1.jpg" },
-      { id:"biggie",           name:"Notorious B.I.G.",         image:"images/hueforge-biggie-1.jpg" },
-      { id:"2pac-yellowmic",   name:"2Pac (Yellow Mic)",        image:"images/hueforge-2pac-yellowmic-1.jpg" },
-      { id:"mj-kingofpop",     name:"Michael Jackson (King of Pop)", image:"images/hueforge-mj-kingofpop-1.jpg" },
-      { id:"eminem",           name:"Eminem",                   image:"images/hueforge-eminem-1.jpg" },
-      { id:"lilwayne-profile", name:"Lil Wayne (Side Profile)", image:"images/hueforge-lilwayne-profile-1.jpg" },
-      { id:"baymax",           name:"Baymax",                   image:"images/hueforge-baymax-1.jpg" },
-      { id:"2pac-framed",      name:"2Pac (Framed)",            image:"images/hueforge-2pac-framed-1.jpg" },
-      { id:"2pac-alleyez",     name:"2Pac (All Eyez on Me)",    image:"images/hueforge-2pac-alleyez-1.jpg" },
-    ] },
-];
-
-/* =========================================================
-   Vinyl-record-sized prints (12" diameter) — flat $25, no frame
-   tiers, pick a design just like the HueForge product above.
-   ========================================================= */
-const VINYL_ITEMS = [
-  { id:"vinyl-record-print", name:"Vinyl Record Print", category:"Lamps & Decor", price:25.00,
-    desc:"A 12\" vinyl-record-sized print. Pick a design below.",
-    images:["images/vinyl-mj-billiejean-1.jpg","images/vinyl-spiral-1.jpg"],
-    designs:[
-      { id:"mj-billiejean",    name:"Michael Jackson — Billie Jean",  image:"images/vinyl-mj-billiejean-1.jpg" },
-      { id:"spiral",           name:"Spiral Portrait",                image:"images/vinyl-spiral-1.jpg" },
-      { id:"freddie-mercury",  name:"Freddie Mercury — Don't Stop Me Now", image:"images/vinyl-freddie-mercury-1.jpg" },
-      { id:"kendrick",         name:"Kendrick Lamar",                 image:"images/vinyl-kendrick-1.jpg" },
+      { id:"tmnt",  name:"TMNT",  image:"images/hueforge-tmnt-1.jpg"  },
+      { id:"2pac",  name:"2Pac",  image:"images/hueforge-2pac-1.jpg"  },
+      { id:"elvis", name:"Elvis", image:"images/hueforge-elvis-1.jpg" },
     ] },
 ];
 
@@ -850,21 +823,13 @@ const VINYL_ITEMS = [
    Fixed single-price items — no color/size choice
    ========================================================= */
 const SIMPLE_ITEMS = [
-  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:7.99,
+  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99,
     desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
     images:["images/wack-a-mole-1.jpg"] },
   { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99,
     desc:"A hand-launched spinner that takes flight with three propellers.",
     blurb:"",
     images:["images/skyspin-launcher-1.jpg"] },
-  { id:"splat-dice-lamp", name:"Splat Dice Lamp", category:"Lamps & Decor", price:30.00,
-    desc:"A splattered die-shaped LED lamp with a remote-controlled color light kit.",
-    blurb:"",
-    images:["images/splat-dice-lamp-1.jpg"] },
-  { id:"mystery-dragon-egg", name:"Mystery Dragon Egg", category:"Dragons", price:22.00,
-    desc:"An iridescent, scaled dragon egg that opens to reveal a hidden mini dragon inside. Shell color and dragon are a surprise.",
-    blurb:"",
-    images:["images/mystery-dragon-egg-1.jpg"] },
 ];
 
 const BUNDLES = [
@@ -1197,7 +1162,6 @@ const ALL_ITEMS = [
   ...PRODUCTS.map(p => ({ ...p, type:"variant" })),
   ...SIZED_PRODUCTS.map(p => ({ ...p, type:"sized" })),
   ...FRAMED_ITEMS.map(p => ({ ...p, type:"framed" })),
-  ...VINYL_ITEMS.map(p => ({ ...p, type:"vinyl" })),
   ...SIMPLE_ITEMS.map(p => ({ ...p, type:"simple" })),
 ];
 const CATEGORIES = ["All", ...new Set(ALL_ITEMS.map(p=>p.category))];
@@ -1343,29 +1307,6 @@ function renderProducts(){
       </div>`;
     }
 
-    if(p.type === "vinyl"){
-      return `
-      <div class="card" data-id="${p.id}">
-        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
-        <div class="card-body">
-          <h3>${p.name}</h3>
-          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-          <div class="design-strip" id="designstrip-${p.id}">
-            ${p.designs.map(d => `
-              <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
-                title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
-            `).join("")}
-          </div>
-          <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
-          <div class="bundle-price mono">${money(p.price)}</div>
-          <div class="card-foot">
-            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-            <button class="btn add-btn" onclick="addVinylToCart('${p.id}')" disabled>Add to Cart</button>
-          </div>
-        </div>
-      </div>`;
-    }
-
     // type === "simple"
     return `
     <div class="card" data-id="${p.id}">
@@ -1418,8 +1359,7 @@ function onFrameChange(id){
 }
 
 function chooseDesign(id, designId){
-  const p = ALL_ITEMS.find(x=>x.id===id); // works for both "framed" and "vinyl" types
-  if(!p || !p.designs) return;
+  const p = FRAMED_ITEMS.find(x=>x.id===id);
   const design = p.designs.find(d=>d.id===designId);
   if(!design) return;
   designSelections[id] = designId;
@@ -1545,23 +1485,6 @@ function addFramedToCart(id){
     id, kind:"framed", name:p.name,
     variantLabel: frameLabel,
     variant: frame, size:null, note: `Design ${design.name}`, unitPrice, qty,
-    image: design.image,
-  });
-  flashAdded(id);
-  renderCart();
-}
-
-function addVinylToCart(id){
-  const p = VINYL_ITEMS.find(x=>x.id===id);
-  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
-  const designId = designSelections[id];
-  const design = p.designs.find(d=>d.id===designId);
-  if(!design) return; // guard; button should already be disabled until a design is picked
-
-  cart.push({
-    id, kind:"vinyl", name:p.name,
-    variantLabel:"",
-    variant:null, size:null, note: `Design ${design.name}`, unitPrice:p.price, qty,
     image: design.image,
   });
   flashAdded(id);
