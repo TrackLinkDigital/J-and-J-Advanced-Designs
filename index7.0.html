@@ -45,7 +45,7 @@
     padding:20px 24px 0;
   }
   .topbar{
-    display:flex; justify-content:space-between; align-items:flex-start;
+    display:flex; justify-content:space-between; align-items:center;
     max-width:1200px; margin:0 auto; padding-bottom:18px; flex-wrap:wrap; gap:12px;
   }
   .brand{ display:flex; flex-direction:column; perspective:700px; }
@@ -55,14 +55,14 @@
   }
   .brand h1{
     font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
-    transition:transform .12s ease-out; margin:0;
-  }
-  .brand-logo{
-    display:block; height:220px; width:auto;
-    filter:drop-shadow(3px 5px 10px rgba(0,0,0,.5));
-  }
-  @media (max-width:520px){
-    .brand-logo{ height:144px; }
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
   }
   @keyframes idleTilt3d{
     0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
@@ -139,26 +139,6 @@
 
   .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:22px; margin-top:20px; }
 
-  .mini-card{
-    background:var(--panel); border-radius:var(--radius); overflow:hidden;
-    border:1px solid var(--line); cursor:pointer;
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
-  .mini-card:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(20,20,20,.09); }
-  .mini-card img{ width:100%; height:170px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
-  .mini-card:hover img{ transform:scale(1.05); }
-  .mini-card-body{ padding:12px 14px 14px; }
-  .mini-card-body h3{ font-size:.98rem; margin:0 0 4px; }
-  .mini-card-price{ color:var(--teal-deep); font-weight:600; font-size:.92rem; }
-  .mini-card-badge{ color:var(--ink-soft); font-size:.72rem; margin-top:3px; line-height:1.3; }
-  @media (max-width:520px){
-    .mini-card img{ height:120px; }
-    .mini-card-body{ padding:9px 10px 11px; }
-    .mini-card-body h3{ font-size:.82rem; }
-    .mini-card-price{ font-size:.8rem; }
-    .mini-card-badge{ font-size:.66rem; }
-  }
-
   .card{
     background:var(--panel); border-radius:var(--radius); overflow:hidden;
     border:1px solid var(--line); display:flex; flex-direction:column;
@@ -198,11 +178,11 @@
 
   .color-strip-wrap{ margin-top:2px; }
   .color-strip{
-    display:flex; gap:11px; overflow-x:auto; padding:6px 2px 10px;
+    display:flex; gap:9px; overflow-x:auto; padding:5px 2px 9px;
     -webkit-overflow-scrolling:touch; scrollbar-width:thin;
   }
   .swatch{
-    width:36px; height:36px; min-width:36px; border-radius:50%; border:2px solid var(--line);
+    width:28px; height:28px; min-width:28px; border-radius:50%; border:2px solid var(--line);
     cursor:pointer; padding:0; transition:transform .15s ease, box-shadow .15s ease;
   }
   .swatch:hover{ transform:scale(1.12); }
@@ -222,19 +202,16 @@
   }
   .design-thumb:hover{ transform:scale(1.06); }
   .design-thumb.selected{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--teal); }
-  .finish-row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .finish-row{ display:flex; gap:6px; margin-top:6px; }
   .finish-chip{
     border:1.5px solid var(--line); background:var(--panel); border-radius:999px;
-    padding:9px 18px; font-size:.9rem; font-weight:600; cursor:pointer; color:var(--ink-soft);
+    padding:4px 11px; font-size:.74rem; font-weight:500; cursor:pointer; color:var(--ink-soft);
     transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
   .finish-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
   .finish-chip:disabled{ opacity:.35; cursor:not-allowed; }
-  .filament-row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
-  .material-warning{ color:var(--danger); font-size:.85rem; margin-top:8px; }
-  /* Bundle picker keeps its own compact chip size — space is tight there
-     with multiple items stacked, unlike the roomy single-item detail modal. */
-  .picker-color-item .finish-chip{ padding:4px 11px; font-size:.74rem; font-weight:500; }
+  .filament-row{ display:flex; gap:6px; margin-top:6px; }
+  .material-warning{ color:var(--danger); font-size:.78rem; margin-top:6px; }
   .card-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; gap:10px; }
   .qty-input{ width:52px; padding:8px; border:1px solid var(--line); border-radius:8px; text-align:center; }
   .add-btn{ flex:1; }
@@ -342,54 +319,8 @@
   .picker-foot{ padding:16px 20px 20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line); margin-top:8px; }
   #closePicker{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
 
-  /* Product detail modal — holds everything that used to be inline on the grid card */
-  #productDetailOverlay{
-    position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:52;
-    opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease;
-  }
-  #productDetailOverlay.open{ opacity:1; visibility:visible; }
-  #productDetailModal{
-    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
-    width:min(480px,92vw); max-height:88vh; background:var(--panel); border-radius:var(--radius);
-    z-index:53; box-shadow:0 24px 60px rgba(0,0,0,.3); display:flex; flex-direction:column;
-    opacity:0; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
-  }
-  #productDetailModal.open{ opacity:1; visibility:visible; transform:translate(-50%,-50%); }
-  #closeProductDetailBtn{
-    background:none; border:none; font-size:1.9rem; cursor:pointer; color:var(--ink);
-    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
-    border-radius:50%; line-height:1; transition:background .15s ease;
-  }
-  #closeProductDetailBtn:hover{ background:var(--paper); }
-  .product-detail-body{ padding:0 20px 20px; overflow-y:auto; }
-  .product-detail-foot{ padding:0 20px 20px; border-top:1px solid var(--line); padding-top:14px; }
-  .product-detail-body .card{ border:none; }
-  .product-detail-body .card:hover{ transform:none; box-shadow:none; }
-  .product-detail-body .card img{ border-radius:8px; cursor:zoom-in; height:340px; }
-  .product-detail-body .card:hover img{ transform:none; }
-
   /* Image lightbox */
   .card img{ cursor:zoom-in; }
-  .detail-gallery{ position:relative; }
-  .gallery-nav{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:36px; height:36px; border-radius:50%; border:none;
-    background:rgba(20,20,20,.45); color:#fff; font-size:1.4rem; line-height:1;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:background .15s ease;
-  }
-  .gallery-nav:hover{ background:rgba(20,20,20,.7); }
-  .gallery-nav.prev{ left:10px; }
-  .gallery-nav.next{ right:10px; }
-  .gallery-dots{
-    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-    display:flex; gap:6px;
-  }
-  .gallery-dots .dot{
-    width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.55);
-    cursor:pointer; transition:background .15s ease, transform .15s ease;
-  }
-  .gallery-dots .dot.active{ background:#fff; transform:scale(1.3); }
   #lightboxOverlay{
     position:fixed; inset:0; background:rgba(15,15,15,.82); z-index:70;
     opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
@@ -443,10 +374,20 @@
   }
   @media (max-width:520px){
     .grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
+    .card img{ height:110px; }
+    .card-body{ padding:10px 10px 12px; gap:6px; }
+    .card h3{ font-size:.86rem; line-height:1.25; }
+    .variant-row{ gap:5px; }
+    .variant-opt{ min-width:0; padding:6px 6px; font-size:.7rem; }
+    .variant-opt .price{ font-size:.72rem; }
+    .card-foot{ gap:6px; }
+    .qty-input{ width:40px; padding:6px; font-size:.8rem; }
+    .add-btn{ padding:9px 8px; font-size:.76rem; }
     section{ padding:36px 16px; }
     .section-head h2{ font-size:1.5rem; }
     .filter-bar{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
-    .product-detail-body .card img{ height:250px; }
+    .swatch{ width:24px; height:24px; min-width:24px; }
+    .color-selected-label{ font-size:.72rem; }
   }
 </style>
 </head>
@@ -457,7 +398,7 @@
   <div class="topbar">
     <div class="brand">
       <span class="eyebrow">Made-to-order · FDM 3D printing</span>
-      <h1><img src="images/logo-jj-applied-designs.png" alt="J&amp;J Applied Designs — You Imagine It, We Print It" class="brand-logo"></h1>
+      <h1>J&amp;J Applied Designs</h1>
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>
@@ -657,19 +598,6 @@
   <div class="picker-foot">
     <button class="btn secondary" onclick="closePicker()">Cancel</button>
     <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
-  </div>
-</div>
-
-<!-- Product Detail Modal -->
-<div id="productDetailOverlay" onclick="closeProductDetail()"></div>
-<div id="productDetailModal">
-  <div class="picker-head">
-    <h3 id="productDetailTitle">Product</h3>
-    <button id="closeProductDetailBtn" onclick="closeProductDetail()">&times;</button>
-  </div>
-  <div class="product-detail-body" id="productDetailBody"></div>
-  <div class="product-detail-foot">
-    <button class="btn secondary" style="width:100%;" onclick="closeProductDetail(); openCart();">Go to Cart</button>
   </div>
 </div>
 
@@ -1080,9 +1008,6 @@ let finishSelections = {};
 let materialSelections = {};
 // productId -> chosen design id for FRAMED_ITEMS (e.g. "tmnt"), null until picked
 let designSelections = {};
-// productId -> which photo index is currently showing in the detail modal's gallery
-let galleryIndex = {};
-let galleryTimer = null;
 
 function getColorMax(id){
   const input = document.querySelector(`input[name="variant-${id}"]:checked`);
@@ -1294,288 +1219,174 @@ function setCategory(cat){
 }
 
 /* ---------- render product grid ---------- */
-/* ---------- compact grid cards ---------- */
-function miniCardPriceText(p){
-  if(p.type === "variant") return p.noMulti ? money(p.single) : `From ${money(p.single)}`;
-  if(p.type === "sized") return `From ${money(p.sizes.small.single)}`;
-  if(p.type === "framed") return `From ${money(p.options.none)}`;
-  return money(p.price); // vinyl, simple
-}
-
-// Small hint shown on the compact card so it's obvious there's a choice to
-// make (size, frame tier, etc.) before the customer even clicks into it.
-function miniCardBadgeText(p){
-  if(p.type === "sized") return "Small & Large available";
-  if(p.type === "framed") return "No Frame / Framed / Framed + LED";
-  return null;
-}
-
-function productMiniCardHtml(p){
-  const img = p.images[0] || PLACEHOLDER_IMG;
-  const badge = miniCardBadgeText(p);
-  return `
-  <div class="mini-card" data-id="${p.id}" onclick="openProductDetail('${p.id}')">
-    <img src="${img}" alt="${p.name}" loading="lazy">
-    <div class="mini-card-body">
-      <h3>${p.name}</h3>
-      <div class="mini-card-price mono">${miniCardPriceText(p)}</div>
-      ${badge ? `<div class="mini-card-badge">${badge}</div>` : ""}
-    </div>
-  </div>`;
-}
-
 function renderProducts(){
   const grid = document.getElementById("productGrid");
   const visible = activeCategory === "All" ? ALL_ITEMS : ALL_ITEMS.filter(p=>p.category===activeCategory);
-  grid.innerHTML = visible.map(p => productMiniCardHtml(p)).join("");
-}
+  grid.innerHTML = visible.map(p => {
+    const img = p.images[0] || PLACEHOLDER_IMG;
 
-/* ---------- product detail modal ---------- */
-// Builds the exact same interactive markup (variant/color/finish pickers,
-// size/frame/design pickers, note field, qty, add-to-cart) that used to
-// render inline on every grid card. Now it only exists once, inside the
-// detail modal, for whichever single product is currently open.
-// For products with more than one photo, renders a full gallery (arrows +
-// dots + autoplay) instead of a single flat <img>. Only used for plain
-// photo-based types — framed/vinyl items already "cycle" pictures via
-// their design picker, so a second gallery on top would be redundant.
-function detailImageHtml(p){
-  const images = p.images.length ? p.images : [PLACEHOLDER_IMG];
-  if(images.length <= 1){
-    return `<img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">`;
-  }
-  return `
-    <div class="detail-gallery">
-      <img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
-      <button type="button" class="gallery-nav prev" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',-1)" aria-label="Previous photo">&#8249;</button>
-      <button type="button" class="gallery-nav next" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',1)" aria-label="Next photo">&#8250;</button>
-      <div class="gallery-dots">
-        ${images.map((_,i) => `<span class="dot${i===0?" active":""}" data-idx="${i}" onclick="event.stopPropagation(); setGalleryImage('${p.id}',${i})"></span>`).join("")}
-      </div>
-    </div>`;
-}
+    if(p.type === "variant"){
+      const noteField = p.allowsNote ? `
+        <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
+      // noMulti items (like the flat-price Pencil Pen) skip the visible
+      // toggle entirely, but still need a checked radio in the DOM since
+      // addProductToCart() reads `input[name="variant-${id}"]:checked`.
+      const variantToggle = p.noMulti
+        ? `<input type="radio" name="variant-${p.id}" value="single" checked style="display:none">`
+        : `
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+              <span class="price mono">${money(p.single)}</span>
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+              <span class="price mono">${money(p.multi)}</span>
+            </label>
+          </div>`;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          ${p.noMulti ? `<div class="bundle-price mono">${money(p.single)}</div>` : ""}
+          ${variantToggle}
+          ${colorStripHtml(p.id)}
+          ${noteField}
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function updateGalleryImage(id){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p) return;
-  const idx = galleryIndex[id] || 0;
-  const imgEl = document.getElementById(`img-${id}`);
-  if(imgEl) imgEl.src = p.images[idx];
-  document.querySelectorAll("#productDetailBody .dot").forEach((dot,i)=>{
-    dot.classList.toggle("active", i === idx);
-  });
-}
+    if(p.type === "sized"){
+      const initialPrice = p.sizes.small.single;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="variant-row">
+            <label class="variant-opt selected" data-size="small">
+              <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
+              Small
+            </label>
+            <label class="variant-opt" data-size="large">
+              <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
+              Large
+            </label>
+          </div>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+            </label>
+          </div>
+          ${colorStripHtml(p.id)}
+          <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function shiftGalleryImage(id, dir){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  const len = p.images.length;
-  galleryIndex[id] = ((galleryIndex[id] || 0) + dir + len) % len;
-  updateGalleryImage(id);
-}
+    if(p.type === "framed"){
+      const initialPrice = p.options.none;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="design-strip" id="designstrip-${p.id}">
+            ${p.designs.map(d => `
+              <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
+                title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
+            `).join("")}
+          </div>
+          <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-frame="none">
+              <input type="radio" name="frame-${p.id}" value="none" checked onchange="onFrameChange('${p.id}')">
+              No Frame
+              <span class="price mono">${money(p.options.none)}</span>
+            </label>
+            <label class="variant-opt" data-frame="frame">
+              <input type="radio" name="frame-${p.id}" value="frame" onchange="onFrameChange('${p.id}')">
+              Framed
+              <span class="price mono">${money(p.options.frame)}</span>
+            </label>
+            <label class="variant-opt" data-frame="led">
+              <input type="radio" name="frame-${p.id}" value="led" onchange="onFrameChange('${p.id}')">
+              Framed + LED
+              <span class="price mono">${money(p.options.led)}</span>
+            </label>
+          </div>
+          <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addFramedToCart('${p.id}')" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function setGalleryImage(id, idx){
-  galleryIndex[id] = idx;
-  updateGalleryImage(id);
-  clearInterval(galleryTimer); // manual interaction takes over — stop auto-advancing
-}
+    if(p.type === "vinyl"){
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="design-strip" id="designstrip-${p.id}">
+            ${p.designs.map(d => `
+              <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
+                title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
+            `).join("")}
+          </div>
+          <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
+          <div class="bundle-price mono">${money(p.price)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addVinylToCart('${p.id}')" disabled>Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function startGalleryAutoplay(id){
-  clearInterval(galleryTimer);
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  galleryTimer = setInterval(()=> shiftGalleryImage(id, 1), 3500);
-}
-
-function productDetailInnerHtml(p){
-  const img = p.images[0] || PLACEHOLDER_IMG;
-
-  if(p.type === "variant"){
-    const noteField = p.allowsNote ? `
-      <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
-    // noMulti items (like the flat-price Pencil Pen) skip the visible
-    // toggle entirely, but still need a checked radio in the DOM since
-    // addProductToCart() reads `input[name="variant-${id}"]:checked`.
-    const variantToggle = p.noMulti
-      ? `<input type="radio" name="variant-${p.id}" value="single" checked style="display:none">`
-      : `
-        <div class="variant-row">
-          <label class="variant-opt selected" data-variant="single">
-            <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
-            Single Color
-            <span class="price mono">${money(p.single)}</span>
-          </label>
-          <label class="variant-opt" data-variant="multi">
-            <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
-            Multi/Custom
-            <span class="price mono">${money(p.multi)}</span>
-          </label>
-        </div>`;
+    // type === "simple"
     return `
     <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
+      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
       <div class="card-body">
         <h3>${p.name}</h3>
         ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        ${p.noMulti ? `<div class="bundle-price mono">${money(p.single)}</div>` : ""}
-        ${variantToggle}
-        ${colorStripHtml(p.id)}
-        ${noteField}
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "sized"){
-    const initialPrice = p.sizes.small.single;
-    return `
-    <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="variant-row">
-          <label class="variant-opt selected" data-size="small">
-            <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
-            Small
-          </label>
-          <label class="variant-opt" data-size="large">
-            <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
-            Large
-          </label>
-        </div>
-        <div class="variant-row">
-          <label class="variant-opt selected" data-variant="single">
-            <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
-            Single Color
-          </label>
-          <label class="variant-opt" data-variant="multi">
-            <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
-            Multi/Custom
-          </label>
-        </div>
-        ${colorStripHtml(p.id)}
-        <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "framed"){
-    const initialPrice = p.options.none;
-    return `
-    <div class="card" data-id="${p.id}">
-      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="design-strip" id="designstrip-${p.id}">
-          ${p.designs.map(d => `
-            <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
-              title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
-          `).join("")}
-        </div>
-        <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
-        <div class="variant-row">
-          <label class="variant-opt selected" data-frame="none">
-            <input type="radio" name="frame-${p.id}" value="none" checked onchange="onFrameChange('${p.id}')">
-            No Frame
-            <span class="price mono">${money(p.options.none)}</span>
-          </label>
-          <label class="variant-opt" data-frame="frame">
-            <input type="radio" name="frame-${p.id}" value="frame" onchange="onFrameChange('${p.id}')">
-            Framed
-            <span class="price mono">${money(p.options.frame)}</span>
-          </label>
-          <label class="variant-opt" data-frame="led">
-            <input type="radio" name="frame-${p.id}" value="led" onchange="onFrameChange('${p.id}')">
-            Framed + LED
-            <span class="price mono">${money(p.options.led)}</span>
-          </label>
-        </div>
-        <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addFramedToCart('${p.id}')" disabled>Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "vinyl"){
-    return `
-    <div class="card" data-id="${p.id}">
-      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="design-strip" id="designstrip-${p.id}">
-          ${p.designs.map(d => `
-            <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
-              title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
-          `).join("")}
-        </div>
-        <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
+        ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
         <div class="bundle-price mono">${money(p.price)}</div>
         <div class="card-foot">
           <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addVinylToCart('${p.id}')" disabled>Add to Cart</button>
+          <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
         </div>
       </div>
     </div>`;
-  }
+  }).join("");
 
-  // type === "simple"
-  return `
-  <div class="card" data-id="${p.id}">
-    ${detailImageHtml(p)}
-    <div class="card-body">
-      <h3>${p.name}</h3>
-      ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-      ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
-      <div class="bundle-price mono">${money(p.price)}</div>
-      <div class="card-foot">
-        <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-        <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function openProductDetail(id){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p) return;
-
-  document.getElementById("productDetailTitle").textContent = p.name;
-  document.getElementById("productDetailBody").innerHTML = productDetailInnerHtml(p);
-
-  // Fresh state every time the modal opens — matches the old behavior,
-  // where every grid re-render (e.g. switching category filters) also
-  // reset color/design choices and required picking again.
-  if(p.type === "variant" || p.type === "sized"){
-    resetColorSelection(id);
-  }
-  if(p.type === "framed" || p.type === "vinyl"){
-    designSelections[id] = null;
-  }
-
-  galleryIndex[id] = 0;
-  startGalleryAutoplay(id);
-
-  document.getElementById("productDetailOverlay").classList.add("open");
-  document.getElementById("productDetailModal").classList.add("open");
-}
-
-function closeProductDetail(){
-  clearInterval(galleryTimer);
-  document.getElementById("productDetailOverlay").classList.remove("open");
-  document.getElementById("productDetailModal").classList.remove("open");
+  // Initialize color-picker state (and disabled Add button) for every card that has one.
+  visible.forEach(p=>{
+    if(p.type === "variant" || p.type === "sized") resetColorSelection(p.id);
+  });
 }
 
 function onVariantChange(id){
@@ -2055,7 +1866,7 @@ const revealObserver = new IntersectionObserver((entries)=>{
 }, { threshold:0.12 });
 
 function applyScrollReveal(){
-  document.querySelectorAll(".card:not(.reveal), .mini-card:not(.reveal)").forEach(el=>{
+  document.querySelectorAll(".card:not(.reveal)").forEach(el=>{
     el.classList.add("reveal");
     revealObserver.observe(el);
   });

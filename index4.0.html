@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>J&J Applied Designs — Custom 3D Printing</title>
+<title>J&J Advanced Designs — Custom 3D Printing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -45,7 +45,7 @@
     padding:20px 24px 0;
   }
   .topbar{
-    display:flex; justify-content:space-between; align-items:flex-start;
+    display:flex; justify-content:space-between; align-items:center;
     max-width:1200px; margin:0 auto; padding-bottom:18px; flex-wrap:wrap; gap:12px;
   }
   .brand{ display:flex; flex-direction:column; perspective:700px; }
@@ -55,14 +55,14 @@
   }
   .brand h1{
     font-size:1.7rem; font-weight:700; transform-style:preserve-3d;
-    transition:transform .12s ease-out; margin:0;
-  }
-  .brand-logo{
-    display:block; height:220px; width:auto;
-    filter:drop-shadow(3px 5px 10px rgba(0,0,0,.5));
-  }
-  @media (max-width:520px){
-    .brand-logo{ height:144px; }
+    transition:transform .12s ease-out;
+    text-shadow:
+      1px 1px 0 var(--teal),
+      2px 2px 0 var(--teal),
+      3px 3px 0 var(--teal-deep),
+      4px 4px 0 var(--teal-deep),
+      5px 5px 0 var(--amber),
+      6px 6px 14px rgba(0,0,0,.4);
   }
   @keyframes idleTilt3d{
     0%,100%{ transform:rotateX(0deg) rotateY(0deg); }
@@ -139,26 +139,6 @@
 
   .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(270px,1fr)); gap:22px; margin-top:20px; }
 
-  .mini-card{
-    background:var(--panel); border-radius:var(--radius); overflow:hidden;
-    border:1px solid var(--line); cursor:pointer;
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
-  .mini-card:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(20,20,20,.09); }
-  .mini-card img{ width:100%; height:170px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
-  .mini-card:hover img{ transform:scale(1.05); }
-  .mini-card-body{ padding:12px 14px 14px; }
-  .mini-card-body h3{ font-size:.98rem; margin:0 0 4px; }
-  .mini-card-price{ color:var(--teal-deep); font-weight:600; font-size:.92rem; }
-  .mini-card-badge{ color:var(--ink-soft); font-size:.72rem; margin-top:3px; line-height:1.3; }
-  @media (max-width:520px){
-    .mini-card img{ height:120px; }
-    .mini-card-body{ padding:9px 10px 11px; }
-    .mini-card-body h3{ font-size:.82rem; }
-    .mini-card-price{ font-size:.8rem; }
-    .mini-card-badge{ font-size:.66rem; }
-  }
-
   .card{
     background:var(--panel); border-radius:var(--radius); overflow:hidden;
     border:1px solid var(--line); display:flex; flex-direction:column;
@@ -198,11 +178,11 @@
 
   .color-strip-wrap{ margin-top:2px; }
   .color-strip{
-    display:flex; gap:11px; overflow-x:auto; padding:6px 2px 10px;
+    display:flex; gap:9px; overflow-x:auto; padding:5px 2px 9px;
     -webkit-overflow-scrolling:touch; scrollbar-width:thin;
   }
   .swatch{
-    width:36px; height:36px; min-width:36px; border-radius:50%; border:2px solid var(--line);
+    width:28px; height:28px; min-width:28px; border-radius:50%; border:2px solid var(--line);
     cursor:pointer; padding:0; transition:transform .15s ease, box-shadow .15s ease;
   }
   .swatch:hover{ transform:scale(1.12); }
@@ -211,30 +191,16 @@
   .swatch.selected.third{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--danger); }
   .swatch.selected.fourth{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--ink); }
   .color-selected-label{ font-size:.78rem; color:var(--ink-soft); }
-  .design-strip{
-    display:flex; gap:9px; overflow-x:auto; padding:5px 2px 9px;
-    -webkit-overflow-scrolling:touch; scrollbar-width:thin;
-  }
-  .design-thumb{
-    width:52px; height:52px; min-width:52px; border-radius:8px; border:2px solid var(--line);
-    cursor:pointer; padding:0; background-size:cover; background-position:center;
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .design-thumb:hover{ transform:scale(1.06); }
-  .design-thumb.selected{ box-shadow:0 0 0 2px var(--panel), 0 0 0 4px var(--teal); }
-  .finish-row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .finish-row{ display:flex; gap:6px; margin-top:6px; }
   .finish-chip{
     border:1.5px solid var(--line); background:var(--panel); border-radius:999px;
-    padding:9px 18px; font-size:.9rem; font-weight:600; cursor:pointer; color:var(--ink-soft);
+    padding:4px 11px; font-size:.74rem; font-weight:500; cursor:pointer; color:var(--ink-soft);
     transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
   .finish-chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; }
   .finish-chip:disabled{ opacity:.35; cursor:not-allowed; }
-  .filament-row{ display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
-  .material-warning{ color:var(--danger); font-size:.85rem; margin-top:8px; }
-  /* Bundle picker keeps its own compact chip size — space is tight there
-     with multiple items stacked, unlike the roomy single-item detail modal. */
-  .picker-color-item .finish-chip{ padding:4px 11px; font-size:.74rem; font-weight:500; }
+  .filament-row{ display:flex; gap:6px; margin-top:6px; }
+  .material-warning{ color:var(--danger); font-size:.78rem; margin-top:6px; }
   .card-foot{ display:flex; justify-content:space-between; align-items:center; margin-top:auto; gap:10px; }
   .qty-input{ width:52px; padding:8px; border:1px solid var(--line); border-radius:8px; text-align:center; }
   .add-btn{ flex:1; }
@@ -342,54 +308,8 @@
   .picker-foot{ padding:16px 20px 20px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line); margin-top:8px; }
   #closePicker{ background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink); }
 
-  /* Product detail modal — holds everything that used to be inline on the grid card */
-  #productDetailOverlay{
-    position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:52;
-    opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s ease;
-  }
-  #productDetailOverlay.open{ opacity:1; visibility:visible; }
-  #productDetailModal{
-    position:fixed; top:50%; left:50%; transform:translate(-50%,-46%);
-    width:min(480px,92vw); max-height:88vh; background:var(--panel); border-radius:var(--radius);
-    z-index:53; box-shadow:0 24px 60px rgba(0,0,0,.3); display:flex; flex-direction:column;
-    opacity:0; visibility:hidden; transition:opacity .2s ease, transform .2s ease, visibility .2s ease;
-  }
-  #productDetailModal.open{ opacity:1; visibility:visible; transform:translate(-50%,-50%); }
-  #closeProductDetailBtn{
-    background:none; border:none; font-size:1.9rem; cursor:pointer; color:var(--ink);
-    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
-    border-radius:50%; line-height:1; transition:background .15s ease;
-  }
-  #closeProductDetailBtn:hover{ background:var(--paper); }
-  .product-detail-body{ padding:0 20px 20px; overflow-y:auto; }
-  .product-detail-foot{ padding:0 20px 20px; border-top:1px solid var(--line); padding-top:14px; }
-  .product-detail-body .card{ border:none; }
-  .product-detail-body .card:hover{ transform:none; box-shadow:none; }
-  .product-detail-body .card img{ border-radius:8px; cursor:zoom-in; height:340px; }
-  .product-detail-body .card:hover img{ transform:none; }
-
   /* Image lightbox */
   .card img{ cursor:zoom-in; }
-  .detail-gallery{ position:relative; }
-  .gallery-nav{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:36px; height:36px; border-radius:50%; border:none;
-    background:rgba(20,20,20,.45); color:#fff; font-size:1.4rem; line-height:1;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:background .15s ease;
-  }
-  .gallery-nav:hover{ background:rgba(20,20,20,.7); }
-  .gallery-nav.prev{ left:10px; }
-  .gallery-nav.next{ right:10px; }
-  .gallery-dots{
-    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-    display:flex; gap:6px;
-  }
-  .gallery-dots .dot{
-    width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.55);
-    cursor:pointer; transition:background .15s ease, transform .15s ease;
-  }
-  .gallery-dots .dot.active{ background:#fff; transform:scale(1.3); }
   #lightboxOverlay{
     position:fixed; inset:0; background:rgba(15,15,15,.82); z-index:70;
     opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
@@ -443,10 +363,20 @@
   }
   @media (max-width:520px){
     .grid{ grid-template-columns:repeat(2, 1fr); gap:12px; }
+    .card img{ height:110px; }
+    .card-body{ padding:10px 10px 12px; gap:6px; }
+    .card h3{ font-size:.86rem; line-height:1.25; }
+    .variant-row{ gap:5px; }
+    .variant-opt{ min-width:0; padding:6px 6px; font-size:.7rem; }
+    .variant-opt .price{ font-size:.72rem; }
+    .card-foot{ gap:6px; }
+    .qty-input{ width:40px; padding:6px; font-size:.8rem; }
+    .add-btn{ padding:9px 8px; font-size:.76rem; }
     section{ padding:36px 16px; }
     .section-head h2{ font-size:1.5rem; }
     .filter-bar{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
-    .product-detail-body .card img{ height:250px; }
+    .swatch{ width:24px; height:24px; min-width:24px; }
+    .color-selected-label{ font-size:.72rem; }
   }
 </style>
 </head>
@@ -457,7 +387,7 @@
   <div class="topbar">
     <div class="brand">
       <span class="eyebrow">Made-to-order · FDM 3D printing</span>
-      <h1><img src="images/logo-jj-applied-designs.png" alt="J&amp;J Applied Designs — You Imagine It, We Print It" class="brand-logo"></h1>
+      <h1>J&amp;J Advanced Designs</h1>
     </div>
     <nav>
       <a href="#ready">Ready-Made</a>
@@ -601,7 +531,7 @@
     <div>
       <div class="section-head" style="margin-bottom:0;">
         <div class="tag">The workshop</div>
-        <h2>About J&amp;J Applied Designs</h2>
+        <h2>About J&amp;J Advanced Designs</h2>
       </div>
       <p style="margin-top:16px;">Every piece here is printed, cleaned, and finished by hand — from pocket-sized fidgets to detailed cosplay armor. Ready-made designs ship fast; anything imaginable can be built as a custom order, matched to your vision from color to scale.</p>
     </div>
@@ -621,7 +551,7 @@
 </section>
 
 <footer>
-  <div>© 2026 J&amp;J Applied Designs — All Rights Reserved</div>
+  <div>© 2026 J&amp;J Advanced Designs — All Rights Reserved</div>
   <div class="mono">Payments processed securely via Square</div>
 </footer>
 
@@ -657,19 +587,6 @@
   <div class="picker-foot">
     <button class="btn secondary" onclick="closePicker()">Cancel</button>
     <button class="btn" id="pickerConfirmBtn" onclick="confirmPicker()" disabled>Add to Cart</button>
-  </div>
-</div>
-
-<!-- Product Detail Modal -->
-<div id="productDetailOverlay" onclick="closeProductDetail()"></div>
-<div id="productDetailModal">
-  <div class="picker-head">
-    <h3 id="productDetailTitle">Product</h3>
-    <button id="closeProductDetailBtn" onclick="closeProductDetail()">&times;</button>
-  </div>
-  <div class="product-detail-body" id="productDetailBody"></div>
-  <div class="product-detail-foot">
-    <button class="btn secondary" style="width:100%;" onclick="closeProductDetail(); openCart();">Go to Cart</button>
   </div>
 </div>
 
@@ -739,52 +656,52 @@ const CHECKOUT_ENDPOINT = "https://jandj-checkout.tracklink.workers.dev/";
    Simple single/multi-color products
    ========================================================= */
 const PRODUCTS = [
-  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:12.00, multi:16.00, maxColors:4,
+  { id:"slitherstrike", name:"SlitherStrike (Articulated Snake)", category:"Creatures", single:15.00, multi:20.00, maxColors:4,
     desc:"A fully articulated snake that slithers and coils just like the real thing.",
     images:["images/slitherstrike-1.jpg","images/slitherstrike-2.jpg","images/slitherstrike-3.jpg","images/slitherstrike-4.jpg"] },
-  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"shadowthorn-dragon", name:"ShadowThorn Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A brooding dragon with sharp spines and a fierce stare.",
     images:["images/shadowthorn-dragon-1.jpg","images/shadowthorn-dragon-2.jpg","images/shadowthorn-3.jpg"] },
-  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"prismscale-dragon", name:"PrismScale Dragon", category:"Dragons", single:25.00, multi:30.00, maxColors:4,
     desc:"Scales that shimmer and shift color with every angle of light.",
     images:["images/prismscale-dragon-1.jpg","images/prismscale-dragon-2.jpg","images/prismscale-dragon-3.jpg"] },
   { id:"shadowfang-keychain", name:"ShadowFang Dragon Keychain", category:"Keychains", single:7.99, multi:10.99,
     desc:"A pocket-sized dragon to carry on your keys or backpack.",
     images:["images/shadowfang-keychain-2.jpg","images/shadowfang-4.jpg","images/shadowfang-5.jpg","images/shadowfang-dragon-keychain-mini-dragon.jpg"] },
-  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:5.00, multi:8.99,
+  { id:"tiny-chomp-keychain", name:"Tiny Chomp T-Rex Keychain", category:"Keychains", single:4.99, multi:8.99,
     desc:"A tiny T-Rex with a big bite, perfect for keys and bags.",
     images:["images/tiny-chomp-1.jpg","images/tiny-chomp-keychain.jpg","images/tiny-chomp-keychain-2.jpg"] },
   { id:"guardian-dragon-lamp", name:"Guardian Dragon Lamp", category:"Lamps & Decor", single:32.99, multi:44.99,
     desc:"A dragon-shaped lamp that stands watch over your desk or shelf.",
     images:["images/gaurdian-dragon-lamp-1.jpg","images/gaurdian-dragon-lamp-2.jpg","images/gaurdian-dragon-lamp-3.jpg","images/gaurdian-dragon-lamp-5.jpg","images/gaurdian-dragon-lamp-6.jpg"] },
-  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:10.00, multi:15.00, maxColors:4,
+  { id:"shellshift-turtle", name:"ShellShift Turtle", category:"Creatures", single:14.99, multi:19.99, maxColors:4,
     desc:"A slow-and-steady turtle with a surprisingly satisfying shell.",
     images:["images/shellshift-turtle-1.jpg","images/shellshift-turtle-2.jpg","images/shellshift-turtle-4.jpg","images/shell-shift-turtle-5.jpg"] },
-  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:12.99, multi:15.00, maxColors:4,
+  { id:"scaleshift-egg", name:"ScaleShift Dragon Egg", category:"Dragons", single:18.99, multi:24.99, maxColors:4,
     desc:"A dragon egg that opens to reveal the hatchling hidden inside.",
     images:["images/scaleshift-dragon-egg-1.jpg","images/scaleshift-dragon-egg-3.jpg","images/scaleshift-dragon-egg-4.jpg","images/scaleshift-dragon-egg-5.jpg"] },
-  { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:45.00, allowsNote:true,
+  { id:"pikapause-dock", name:"PikaPause Controller Dock", category:"Gaming", single:34.99, multi:44.99, allowsNote:true,
     desc:"A sturdy charging dock that keeps your controller ready to grab.",
     images:["images/pikapause-controller-dock-1.jpg","images/pikapause-controller-dock-2.jpg"] },
   { id:"hexarack", name:"HexaRack Gaming Organizer", category:"Gaming", single:59.99, multi:74.99, allowsNote:true,
     desc:"Keep every game and controller organized in one hexagonal rack.",
     images:["images/hexarack-1.jpg","images/hexarack-2.jpg"] },
-  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:8.00,
+  { id:"gyrosphere-spinner", name:"GyroSphere Spinner", category:"Fidgets", single:5.99, multi:9.99,
     desc:"A smooth spinning sphere built for quiet, satisfying fidgeting.",
     images:["images/gyro-sphere-spinner-1.jpg","images/gyro-sphere-spinner-2.jpg","images/gyro-sphere-spinner-3.jpg"] },
-  { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:10.00, multi:14.00,
+  { id:"cosmic-star-wand", name:"Cosmic Star Wand (Large)", category:"Wands & Magic", single:17.99, multi:22.99,
     desc:"A large star-tipped wand for anyone who wants a little magic in hand.",
     images:["images/cosmic-star-wand-1.jpg","images/cosmic-star-wand-2.jpg","images/cosmic-star-wand-3.jpg"] },
-  { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:16.00, multi:20.00,
+  { id:"retrovault-case", name:"RetroVault Switch Game Card Case", category:"Gaming", single:27.99, multi:32.99,
     desc:"A snug, protective case that keeps your game cards safe on the go.",
     images:["images/retrovault-nintendo-switch-game-case-1.jpg","images/retrovault-switch-game-case-2.jpg","images/retrovault-switch-game-case-3.jpg"] },
   { id:"dreamglow-fairy-lamp", name:"DreamGlow Fairy Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
     desc:"A soft-glowing fairy lamp for a calm, whimsical nightlight.",
     images:["images/dreamglow-fairy-1.jpg"] },
-  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:24.99, multi:29.99,
+  { id:"auratwist-lamp", name:"AuraTwist LED Lamp", category:"Lamps & Decor", single:30.00, multi:35.00,
     desc:"A twisting LED lamp that throws color across the room.",
     images:["images/auratwist-1.jpg","images/auratwist-2.jpg"] },
-  { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:5.00, multi:8.00,
+  { id:"octospin-ring", name:"Octospin Spinner Ring", category:"Fidgets", single:7.99, multi:12.99,
     desc:"A ring-shaped fidget with eight points to spin between your fingers.",
     images:["images/octospin-1.jpg","images/octospin-3.jpg","images/octospin2.jpg"] },
   { id:"infinity-helix-wand", name:"Infinity Helix Wand", category:"Wands & Magic", single:14.99, multi:18.99,
@@ -805,50 +722,41 @@ const PRODUCTS = [
   { id:"clickstack", name:"ClickStack", category:"Fidgets", single:8.99, multi:11.99,
     desc:"A stack of clicky pieces made for satisfying, repetitive fidgeting.",
     images:["images/clickstack-1.jpg","images/clickstack-2.jpg","images/clickstack-3.jpg"] },
-  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:10.99, multi:14.99, allowsNote:true,
+  { id:"magtrick-flipboard", name:"MagTrick FlipBoard", category:"Fidgets", single:11.99, multi:14.99, allowsNote:true,
     desc:"A flipping magnetic fidget with a satisfying snap.",
     images:["images/magtrick-flipboard-1.jpg","images/magtrick-flipboard-2.jpg","images/magtrick-flipboard-3.jpg"] },
-  { id:"skyfang", name:"SkyFang", category:"Dragons", single:12.99, multi:16.99, maxColors:4,
+  { id:"skyfang", name:"SkyFang", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A sleek, winged dragon built for speed.",
     images:["images/skyfang-1.jpg","images/skyfang-3.jpg","images/skyfang-5.jpg"] },
-  { id:"stormwing", name:"StormWing", category:"Dragons", single:12.99, multi:16.99, maxColors:4,
+  { id:"stormwing", name:"StormWing", category:"Dragons", single:18.99, multi:23.99, maxColors:4,
     desc:"A dragon with dramatic wings that fold and fan open.",
     images:["images/stormwing-button-flap-dragon.jpg","images/stormwing-button-flap-dragon-2.jpg","images/stormwing-button-flap-dragon3.jpg"] },
-  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:8.99, multi:13.99, maxColors:4,
+  { id:"snapjaw-shark", name:"SnapJaw Shark", category:"Creatures", single:14.99, multi:17.99, maxColors:4,
     desc:"A snapping shark jaw fidget that's all bite.",
     images:["images/snapjaw-shark-1.jpg","images/snapjaw-shark-2.jpg","images/snapjaw-shark-3.jpg"] },
-  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:19.99, multi:25.99, allowsNote:true,
+  { id:"paint-pop-lamp", name:"Paint Pop Lamp", category:"Lamps & Decor", single:27.99, multi:35.99, allowsNote:true,
     desc:"A playful paint-splatter lamp that adds a pop of color to any room.",
     images:["images/paint-pop-lamp.jpg","images/paint-pop2.jpg","images/paint-pop3.jpg"] },
   { id:"mindscape-lamp", name:"MindScape Lamp", category:"Lamps & Decor", single:39.99, multi:54.99,
     desc:"An abstract, sculptural lamp that doubles as a conversation piece.",
     images:["images/mndscape-lamp-1.jpg"] },
-  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"shadowflame-dragon", name:"ShadowFlame Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
     desc:"A dragon wreathed in dark, flame-like detailing.",
     images:["images/shadowflame-dragon-1.jpg","images/shadowflame-2.jpg"] },
-  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"stormscale-dragon", name:"StormScale Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A storm-toughened dragon with rugged, weathered scales.",
     images:["images/stormscale-dragon-1.jpg","images/stormscale-2.jpg"] },
-  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"venomspine-dragon", name:"VenomSpine Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A dragon lined with venomous spines down its back.", images:["images/venomspine-dragon-1.jpg"] },
-  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:18.00, multi:22.00, maxColors:4,
+  { id:"inferno-dragon", name:"Inferno Dragon", category:"Dragons", single:24.99, multi:30.00, maxColors:4,
     desc:"A fiery dragon that looks ready to breathe flame.",
     images:["images/inferno-dragon-1.jpg","images/inferno-dragnon-2.jpg"] },
-  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:10.00, multi:13.99,
+  { id:"twisty-bao", name:"Twisty Bao", category:"Fidgets", single:11.99, multi:14.99,
     desc:"A soft, squeezable bao-shaped fidget you can twist apart and back together.",
     images:["images/twisty-bao-1.jpg"] },
   { id:"zenclick", name:"ZenClick", category:"Fidgets", single:12.99, multi:15.99,
     desc:"A smooth clicking orb designed for calm, repetitive fidgeting.",
     images:["images/zenclick-orb-1.jpg","images/zenclick-orb-2.jpg"] },
-  // PRICE NOT CONFIRMED BY CUSTOMER — matched to the existing dragon tier
-  // as a placeholder ($19.99/$24.99). Correct the price before this goes live.
-  { id:"mystical-unicorn-dragon", name:"Mystical Unicorn Dragon", category:"Dragons", single:19.99, multi:24.99, maxColors:4,
-    desc:"An articulated dragon with a spiked mane and tail fin.",
-    images:["images/new-dragon-1.jpg"] },
-  // Flat $10, one color only — no Multi/Custom option shown for this item.
-  { id:"pencil-pen", name:"Pencil Pen", category:"Toys & Games", single:10.00, multi:10.00, maxColors:1, noMulti:true,
-    desc:"A giant novelty pencil that's actually a working pen, in any color.",
-    images:["images/pencil-pen-1.jpg"] },
 ];
 
 /* =========================================================
@@ -870,73 +778,16 @@ const SIZED_PRODUCTS = [
 ];
 
 /* =========================================================
-   Fixed-size HueForge portrait prints (13.75" x 13.75"), sold with
-   a 3-way frame option instead of a size/variant grid:
-     none  — unframed print
-     frame — framed, no lights
-     led   — framed with LEDs built in
-   No color picker — these are specific finished designs, not
-   customizable by color.
-   ========================================================= */
-const FRAMED_ITEMS = [
-  { id:"hueforge-portrait", name:"HueForge Portrait", category:"Lamps & Decor",
-    desc:"A 13.75\" x 13.75\" layered HueForge portrait print. Pick a design below.",
-    images:["images/hueforge-tmnt-1.jpg","images/hueforge-2pac-1.jpg","images/hueforge-elvis-1.jpg"],
-    options:{ none:35.00, frame:45.00, led:60.00 },
-    designs:[
-      { id:"tmnt",         name:"TMNT",                    image:"images/hueforge-tmnt-1.jpg" },
-      { id:"2pac",         name:"2Pac",                     image:"images/hueforge-2pac-1.jpg" },
-      { id:"elvis",        name:"Elvis",                    image:"images/hueforge-elvis-1.jpg" },
-      { id:"lilwayne-green",   name:"Lil Wayne (Green Smoke)",  image:"images/hueforge-lilwayne-green-1.jpg" },
-      { id:"snoop-yellow",     name:"Snoop Dogg (Yellow)",      image:"images/hueforge-snoop-yellow-1.jpg" },
-      { id:"mj-healworld",     name:"Michael Jackson (Heal the World)", image:"images/hueforge-mj-healworld-1.jpg" },
-      { id:"mj-gold",          name:"Michael Jackson (Gold Silhouette)", image:"images/hueforge-mj-gold-1.jpg" },
-      { id:"biggie",           name:"Notorious B.I.G.",         image:"images/hueforge-biggie-1.jpg" },
-      { id:"2pac-yellowmic",   name:"2Pac (Yellow Mic)",        image:"images/hueforge-2pac-yellowmic-1.jpg" },
-      { id:"mj-kingofpop",     name:"Michael Jackson (King of Pop)", image:"images/hueforge-mj-kingofpop-1.jpg" },
-      { id:"eminem",           name:"Eminem",                   image:"images/hueforge-eminem-1.jpg" },
-      { id:"lilwayne-profile", name:"Lil Wayne (Side Profile)", image:"images/hueforge-lilwayne-profile-1.jpg" },
-      { id:"baymax",           name:"Baymax",                   image:"images/hueforge-baymax-1.jpg" },
-      { id:"2pac-framed",      name:"2Pac (Framed)",            image:"images/hueforge-2pac-framed-1.jpg" },
-      { id:"2pac-alleyez",     name:"2Pac (All Eyez on Me)",    image:"images/hueforge-2pac-alleyez-1.jpg" },
-    ] },
-];
-
-/* =========================================================
-   Vinyl-record-sized prints (12" diameter) — flat $25, no frame
-   tiers, pick a design just like the HueForge product above.
-   ========================================================= */
-const VINYL_ITEMS = [
-  { id:"vinyl-record-print", name:"Vinyl Record Print", category:"Lamps & Decor", price:25.00,
-    desc:"A 12\" vinyl-record-sized print. Pick a design below.",
-    images:["images/vinyl-mj-billiejean-1.jpg","images/vinyl-spiral-1.jpg"],
-    designs:[
-      { id:"mj-billiejean",    name:"Michael Jackson — Billie Jean",  image:"images/vinyl-mj-billiejean-1.jpg" },
-      { id:"spiral",           name:"Spiral Portrait",                image:"images/vinyl-spiral-1.jpg" },
-      { id:"freddie-mercury",  name:"Freddie Mercury — Don't Stop Me Now", image:"images/vinyl-freddie-mercury-1.jpg" },
-      { id:"kendrick",         name:"Kendrick Lamar",                 image:"images/vinyl-kendrick-1.jpg" },
-    ] },
-];
-
-/* =========================================================
    Fixed single-price items — no color/size choice
    ========================================================= */
 const SIMPLE_ITEMS = [
-  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:7.99,
+  { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:15.99,
     desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
     images:["images/wack-a-mole-1.jpg"] },
   { id:"skyspin-launcher", name:"SkySpin Launcher", category:"Toys & Games", price:17.99,
     desc:"A hand-launched spinner that takes flight with three propellers.",
     blurb:"",
     images:["images/skyspin-launcher-1.jpg"] },
-  { id:"splat-dice-lamp", name:"Splat Dice Lamp", category:"Lamps & Decor", price:30.00,
-    desc:"A splattered die-shaped LED lamp with a remote-controlled color light kit.",
-    blurb:"",
-    images:["images/splat-dice-lamp-1.jpg"] },
-  { id:"mystery-dragon-egg", name:"Mystery Dragon Egg", category:"Dragons", price:22.00,
-    desc:"An iridescent, scaled dragon egg that opens to reveal a hidden mini dragon inside. Shell color and dragon are a surprise.",
-    blurb:"",
-    images:["images/mystery-dragon-egg-1.jpg"] },
 ];
 
 const BUNDLES = [
@@ -1078,11 +929,6 @@ let colorSelections = {};
 let finishSelections = {};
 // productId -> chosen material id ("pla" | "petg"), null until a valid single option is picked
 let materialSelections = {};
-// productId -> chosen design id for FRAMED_ITEMS (e.g. "tmnt"), null until picked
-let designSelections = {};
-// productId -> which photo index is currently showing in the detail modal's gallery
-let galleryIndex = {};
-let galleryTimer = null;
 
 function getColorMax(id){
   const input = document.querySelector(`input[name="variant-${id}"]:checked`);
@@ -1271,8 +1117,6 @@ function colorNoteText(id){
 const ALL_ITEMS = [
   ...PRODUCTS.map(p => ({ ...p, type:"variant" })),
   ...SIZED_PRODUCTS.map(p => ({ ...p, type:"sized" })),
-  ...FRAMED_ITEMS.map(p => ({ ...p, type:"framed" })),
-  ...VINYL_ITEMS.map(p => ({ ...p, type:"vinyl" })),
   ...SIMPLE_ITEMS.map(p => ({ ...p, type:"simple" })),
 ];
 const CATEGORIES = ["All", ...new Set(ALL_ITEMS.map(p=>p.category))];
@@ -1294,288 +1138,102 @@ function setCategory(cat){
 }
 
 /* ---------- render product grid ---------- */
-/* ---------- compact grid cards ---------- */
-function miniCardPriceText(p){
-  if(p.type === "variant") return p.noMulti ? money(p.single) : `From ${money(p.single)}`;
-  if(p.type === "sized") return `From ${money(p.sizes.small.single)}`;
-  if(p.type === "framed") return `From ${money(p.options.none)}`;
-  return money(p.price); // vinyl, simple
-}
-
-// Small hint shown on the compact card so it's obvious there's a choice to
-// make (size, frame tier, etc.) before the customer even clicks into it.
-function miniCardBadgeText(p){
-  if(p.type === "sized") return "Small & Large available";
-  if(p.type === "framed") return "No Frame / Framed / Framed + LED";
-  return null;
-}
-
-function productMiniCardHtml(p){
-  const img = p.images[0] || PLACEHOLDER_IMG;
-  const badge = miniCardBadgeText(p);
-  return `
-  <div class="mini-card" data-id="${p.id}" onclick="openProductDetail('${p.id}')">
-    <img src="${img}" alt="${p.name}" loading="lazy">
-    <div class="mini-card-body">
-      <h3>${p.name}</h3>
-      <div class="mini-card-price mono">${miniCardPriceText(p)}</div>
-      ${badge ? `<div class="mini-card-badge">${badge}</div>` : ""}
-    </div>
-  </div>`;
-}
-
 function renderProducts(){
   const grid = document.getElementById("productGrid");
   const visible = activeCategory === "All" ? ALL_ITEMS : ALL_ITEMS.filter(p=>p.category===activeCategory);
-  grid.innerHTML = visible.map(p => productMiniCardHtml(p)).join("");
-}
+  grid.innerHTML = visible.map(p => {
+    const img = p.images[0] || PLACEHOLDER_IMG;
 
-/* ---------- product detail modal ---------- */
-// Builds the exact same interactive markup (variant/color/finish pickers,
-// size/frame/design pickers, note field, qty, add-to-cart) that used to
-// render inline on every grid card. Now it only exists once, inside the
-// detail modal, for whichever single product is currently open.
-// For products with more than one photo, renders a full gallery (arrows +
-// dots + autoplay) instead of a single flat <img>. Only used for plain
-// photo-based types — framed/vinyl items already "cycle" pictures via
-// their design picker, so a second gallery on top would be redundant.
-function detailImageHtml(p){
-  const images = p.images.length ? p.images : [PLACEHOLDER_IMG];
-  if(images.length <= 1){
-    return `<img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">`;
-  }
-  return `
-    <div class="detail-gallery">
-      <img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
-      <button type="button" class="gallery-nav prev" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',-1)" aria-label="Previous photo">&#8249;</button>
-      <button type="button" class="gallery-nav next" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',1)" aria-label="Next photo">&#8250;</button>
-      <div class="gallery-dots">
-        ${images.map((_,i) => `<span class="dot${i===0?" active":""}" data-idx="${i}" onclick="event.stopPropagation(); setGalleryImage('${p.id}',${i})"></span>`).join("")}
-      </div>
-    </div>`;
-}
+    if(p.type === "variant"){
+      const noteField = p.allowsNote ? `
+        <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+              <span class="price mono">${money(p.single)}</span>
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+              <span class="price mono">${money(p.multi)}</span>
+            </label>
+          </div>
+          ${colorStripHtml(p.id)}
+          ${noteField}
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function updateGalleryImage(id){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p) return;
-  const idx = galleryIndex[id] || 0;
-  const imgEl = document.getElementById(`img-${id}`);
-  if(imgEl) imgEl.src = p.images[idx];
-  document.querySelectorAll("#productDetailBody .dot").forEach((dot,i)=>{
-    dot.classList.toggle("active", i === idx);
-  });
-}
+    if(p.type === "sized"){
+      const initialPrice = p.sizes.small.single;
+      return `
+      <div class="card" data-id="${p.id}">
+        <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
+          <div class="variant-row">
+            <label class="variant-opt selected" data-size="small">
+              <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
+              Small
+            </label>
+            <label class="variant-opt" data-size="large">
+              <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
+              Large
+            </label>
+          </div>
+          <div class="variant-row">
+            <label class="variant-opt selected" data-variant="single">
+              <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Single Color
+            </label>
+            <label class="variant-opt" data-variant="multi">
+              <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
+              Multi/Custom
+            </label>
+          </div>
+          ${colorStripHtml(p.id)}
+          <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
+          <div class="card-foot">
+            <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
+            <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+    }
 
-function shiftGalleryImage(id, dir){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  const len = p.images.length;
-  galleryIndex[id] = ((galleryIndex[id] || 0) + dir + len) % len;
-  updateGalleryImage(id);
-}
-
-function setGalleryImage(id, idx){
-  galleryIndex[id] = idx;
-  updateGalleryImage(id);
-  clearInterval(galleryTimer); // manual interaction takes over — stop auto-advancing
-}
-
-function startGalleryAutoplay(id){
-  clearInterval(galleryTimer);
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  galleryTimer = setInterval(()=> shiftGalleryImage(id, 1), 3500);
-}
-
-function productDetailInnerHtml(p){
-  const img = p.images[0] || PLACEHOLDER_IMG;
-
-  if(p.type === "variant"){
-    const noteField = p.allowsNote ? `
-      <input type="text" maxlength="40" class="note-field" placeholder="Custom name / letters (optional)" id="note-${p.id}">` : "";
-    // noMulti items (like the flat-price Pencil Pen) skip the visible
-    // toggle entirely, but still need a checked radio in the DOM since
-    // addProductToCart() reads `input[name="variant-${id}"]:checked`.
-    const variantToggle = p.noMulti
-      ? `<input type="radio" name="variant-${p.id}" value="single" checked style="display:none">`
-      : `
-        <div class="variant-row">
-          <label class="variant-opt selected" data-variant="single">
-            <input type="radio" name="variant-${p.id}" value="single" checked onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
-            Single Color
-            <span class="price mono">${money(p.single)}</span>
-          </label>
-          <label class="variant-opt" data-variant="multi">
-            <input type="radio" name="variant-${p.id}" value="multi" onchange="onVariantChange('${p.id}'); resetColorSelection('${p.id}')">
-            Multi/Custom
-            <span class="price mono">${money(p.multi)}</span>
-          </label>
-        </div>`;
+    // type === "simple"
     return `
     <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
+      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
       <div class="card-body">
         <h3>${p.name}</h3>
         ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        ${p.noMulti ? `<div class="bundle-price mono">${money(p.single)}</div>` : ""}
-        ${variantToggle}
-        ${colorStripHtml(p.id)}
-        ${noteField}
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addProductToCart('${p.id}')">Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "sized"){
-    const initialPrice = p.sizes.small.single;
-    return `
-    <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="variant-row">
-          <label class="variant-opt selected" data-size="small">
-            <input type="radio" name="size-${p.id}" value="small" checked onchange="onSizedChange('${p.id}')">
-            Small
-          </label>
-          <label class="variant-opt" data-size="large">
-            <input type="radio" name="size-${p.id}" value="large" onchange="onSizedChange('${p.id}')">
-            Large
-          </label>
-        </div>
-        <div class="variant-row">
-          <label class="variant-opt selected" data-variant="single">
-            <input type="radio" name="variant-${p.id}" value="single" checked onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
-            Single Color
-          </label>
-          <label class="variant-opt" data-variant="multi">
-            <input type="radio" name="variant-${p.id}" value="multi" onchange="onSizedChange('${p.id}'); resetColorSelection('${p.id}')">
-            Multi/Custom
-          </label>
-        </div>
-        ${colorStripHtml(p.id)}
-        <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addSizedToCart('${p.id}')">Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "framed"){
-    const initialPrice = p.options.none;
-    return `
-    <div class="card" data-id="${p.id}">
-      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="design-strip" id="designstrip-${p.id}">
-          ${p.designs.map(d => `
-            <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
-              title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
-          `).join("")}
-        </div>
-        <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
-        <div class="variant-row">
-          <label class="variant-opt selected" data-frame="none">
-            <input type="radio" name="frame-${p.id}" value="none" checked onchange="onFrameChange('${p.id}')">
-            No Frame
-            <span class="price mono">${money(p.options.none)}</span>
-          </label>
-          <label class="variant-opt" data-frame="frame">
-            <input type="radio" name="frame-${p.id}" value="frame" onchange="onFrameChange('${p.id}')">
-            Framed
-            <span class="price mono">${money(p.options.frame)}</span>
-          </label>
-          <label class="variant-opt" data-frame="led">
-            <input type="radio" name="frame-${p.id}" value="led" onchange="onFrameChange('${p.id}')">
-            Framed + LED
-            <span class="price mono">${money(p.options.led)}</span>
-          </label>
-        </div>
-        <div class="bundle-price mono" id="price-${p.id}">${money(initialPrice)}</div>
-        <div class="card-foot">
-          <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addFramedToCart('${p.id}')" disabled>Add to Cart</button>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  if(p.type === "vinyl"){
-    return `
-    <div class="card" data-id="${p.id}">
-      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)" id="img-${p.id}">
-      <div class="card-body">
-        <h3>${p.name}</h3>
-        ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-        <div class="design-strip" id="designstrip-${p.id}">
-          ${p.designs.map(d => `
-            <button type="button" class="design-thumb" data-design="${d.id}" style="background-image:url('${d.image}')"
-              title="${d.name}" onclick="chooseDesign('${p.id}','${d.id}')" aria-label="${d.name}"></button>
-          `).join("")}
-        </div>
-        <div class="color-selected-label" id="designlabel-${p.id}">Choose a design</div>
+        ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
         <div class="bundle-price mono">${money(p.price)}</div>
         <div class="card-foot">
           <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-          <button class="btn add-btn" onclick="addVinylToCart('${p.id}')" disabled>Add to Cart</button>
+          <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
         </div>
       </div>
     </div>`;
-  }
+  }).join("");
 
-  // type === "simple"
-  return `
-  <div class="card" data-id="${p.id}">
-    ${detailImageHtml(p)}
-    <div class="card-body">
-      <h3>${p.name}</h3>
-      ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
-      ${p.blurb ? `<p style="color:var(--ink-soft); font-size:.85rem; margin:0;">${p.blurb}</p>` : ""}
-      <div class="bundle-price mono">${money(p.price)}</div>
-      <div class="card-foot">
-        <input type="number" class="qty-input" id="qty-${p.id}" value="1" min="1" max="20">
-        <button class="btn add-btn" onclick="addSimpleToCart('${p.id}')">Add to Cart</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function openProductDetail(id){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p) return;
-
-  document.getElementById("productDetailTitle").textContent = p.name;
-  document.getElementById("productDetailBody").innerHTML = productDetailInnerHtml(p);
-
-  // Fresh state every time the modal opens — matches the old behavior,
-  // where every grid re-render (e.g. switching category filters) also
-  // reset color/design choices and required picking again.
-  if(p.type === "variant" || p.type === "sized"){
-    resetColorSelection(id);
-  }
-  if(p.type === "framed" || p.type === "vinyl"){
-    designSelections[id] = null;
-  }
-
-  galleryIndex[id] = 0;
-  startGalleryAutoplay(id);
-
-  document.getElementById("productDetailOverlay").classList.add("open");
-  document.getElementById("productDetailModal").classList.add("open");
-}
-
-function closeProductDetail(){
-  clearInterval(galleryTimer);
-  document.getElementById("productDetailOverlay").classList.remove("open");
-  document.getElementById("productDetailModal").classList.remove("open");
+  // Initialize color-picker state (and disabled Add button) for every card that has one.
+  visible.forEach(p=>{
+    if(p.type === "variant" || p.type === "sized") resetColorSelection(p.id);
+  });
 }
 
 function onVariantChange(id){
@@ -1594,42 +1252,6 @@ function onSizedChange(id){
   const size = card.querySelector(`input[name="size-${id}"]:checked`).value;
   const variant = card.querySelector(`input[name="variant-${id}"]:checked`).value;
   document.getElementById(`price-${id}`).textContent = money(p.sizes[size][variant]);
-}
-
-function onFrameChange(id){
-  const p = FRAMED_ITEMS.find(x=>x.id===id);
-  const card = document.querySelector(`.card[data-id="${id}"]`);
-  card.querySelectorAll(".variant-opt").forEach(el=>{
-    el.classList.toggle("selected", el.querySelector("input").checked);
-  });
-  const frame = card.querySelector(`input[name="frame-${id}"]:checked`).value;
-  document.getElementById(`price-${id}`).textContent = money(p.options[frame]);
-}
-
-function chooseDesign(id, designId){
-  const p = ALL_ITEMS.find(x=>x.id===id); // works for both "framed" and "vinyl" types
-  if(!p || !p.designs) return;
-  const design = p.designs.find(d=>d.id===designId);
-  if(!design) return;
-  designSelections[id] = designId;
-
-  const strip = document.getElementById(`designstrip-${id}`);
-  if(strip){
-    strip.querySelectorAll(".design-thumb").forEach(btn=>{
-      btn.classList.toggle("selected", btn.dataset.design === designId);
-    });
-  }
-  const label = document.getElementById(`designlabel-${id}`);
-  if(label) label.textContent = `Design: ${design.name}`;
-
-  // Swap the card's main photo to whichever design is picked, so the
-  // preview (and the lightbox, which reads this same <img>) matches
-  // the actual piece the customer is about to buy.
-  const imgEl = document.getElementById(`img-${id}`);
-  if(imgEl){ imgEl.src = design.image; imgEl.alt = `${p.name} — ${design.name}`; }
-
-  const addBtn = document.querySelector(`.card[data-id="${id}"] .add-btn`);
-  if(addBtn) addBtn.disabled = false;
 }
 
 function renderBundles(){
@@ -1714,44 +1336,6 @@ function addSizedToCart(id){
     variantLabel: `${size === "large" ? "Large" : "Small"} · ${variant === "multi" ? "Multi/Custom" : "Single Color"}`,
     variant, size, note: colorNoteText(id), unitPrice, qty,
     image: p.images[0] || PLACEHOLDER_IMG,
-  });
-  flashAdded(id);
-  renderCart();
-}
-
-function addFramedToCart(id){
-  const p = FRAMED_ITEMS.find(x=>x.id===id);
-  const card = document.querySelector(`.card[data-id="${id}"]`);
-  const frame = card.querySelector(`input[name="frame-${id}"]:checked`).value;
-  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
-  const designId = designSelections[id];
-  const design = p.designs.find(d=>d.id===designId);
-  if(!design) return; // guard; button should already be disabled until a design is picked
-  const unitPrice = p.options[frame];
-  const frameLabel = frame === "led" ? "Framed + LED" : frame === "frame" ? "Framed" : "No Frame";
-
-  cart.push({
-    id, kind:"framed", name:p.name,
-    variantLabel: frameLabel,
-    variant: frame, size:null, note: `Design ${design.name}`, unitPrice, qty,
-    image: design.image,
-  });
-  flashAdded(id);
-  renderCart();
-}
-
-function addVinylToCart(id){
-  const p = VINYL_ITEMS.find(x=>x.id===id);
-  const qty = Math.max(1, parseInt(document.getElementById(`qty-${id}`).value,10) || 1);
-  const designId = designSelections[id];
-  const design = p.designs.find(d=>d.id===designId);
-  if(!design) return; // guard; button should already be disabled until a design is picked
-
-  cart.push({
-    id, kind:"vinyl", name:p.name,
-    variantLabel:"",
-    variant:null, size:null, note: `Design ${design.name}`, unitPrice:p.price, qty,
-    image: design.image,
   });
   flashAdded(id);
   renderCart();
@@ -2055,7 +1639,7 @@ const revealObserver = new IntersectionObserver((entries)=>{
 }, { threshold:0.12 });
 
 function applyScrollReveal(){
-  document.querySelectorAll(".card:not(.reveal), .mini-card:not(.reveal)").forEach(el=>{
+  document.querySelectorAll(".card:not(.reveal)").forEach(el=>{
     el.classList.add("reveal");
     revealObserver.observe(el);
   });
