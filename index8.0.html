@@ -145,14 +145,14 @@
     transition:transform .25s ease, box-shadow .25s ease;
   }
   .mini-card:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(20,20,20,.09); }
-  .mini-card img{ width:100%; height:190px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
+  .mini-card img{ width:100%; height:170px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
   .mini-card:hover img{ transform:scale(1.05); }
   .mini-card-body{ padding:12px 14px 14px; }
   .mini-card-body h3{ font-size:.98rem; margin:0 0 4px; }
   .mini-card-price{ color:var(--teal-deep); font-weight:600; font-size:.92rem; }
   .mini-card-badge{ color:var(--ink-soft); font-size:.72rem; margin-top:3px; line-height:1.3; }
   @media (max-width:520px){
-    .mini-card img{ height:135px; }
+    .mini-card img{ height:120px; }
     .mini-card-body{ padding:9px 10px 11px; }
     .mini-card-body h3{ font-size:.82rem; }
     .mini-card-price{ font-size:.8rem; }
@@ -365,31 +365,11 @@
   .product-detail-foot{ padding:0 20px 20px; border-top:1px solid var(--line); padding-top:14px; }
   .product-detail-body .card{ border:none; }
   .product-detail-body .card:hover{ transform:none; box-shadow:none; }
-  .product-detail-body .card img{ border-radius:8px; cursor:zoom-in; height:340px; }
+  .product-detail-body .card img{ border-radius:8px; cursor:zoom-in; }
   .product-detail-body .card:hover img{ transform:none; }
 
   /* Image lightbox */
   .card img{ cursor:zoom-in; }
-  .detail-gallery{ position:relative; }
-  .gallery-nav{
-    position:absolute; top:50%; transform:translateY(-50%);
-    width:36px; height:36px; border-radius:50%; border:none;
-    background:rgba(20,20,20,.45); color:#fff; font-size:1.4rem; line-height:1;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:background .15s ease;
-  }
-  .gallery-nav:hover{ background:rgba(20,20,20,.7); }
-  .gallery-nav.prev{ left:10px; }
-  .gallery-nav.next{ right:10px; }
-  .gallery-dots{
-    position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
-    display:flex; gap:6px;
-  }
-  .gallery-dots .dot{
-    width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.55);
-    cursor:pointer; transition:background .15s ease, transform .15s ease;
-  }
-  .gallery-dots .dot.active{ background:#fff; transform:scale(1.3); }
   #lightboxOverlay{
     position:fixed; inset:0; background:rgba(15,15,15,.82); z-index:70;
     opacity:0; visibility:hidden; transition:opacity .25s ease, visibility .25s ease;
@@ -446,7 +426,6 @@
     section{ padding:36px 16px; }
     .section-head h2{ font-size:1.5rem; }
     .filter-bar{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; }
-    .product-detail-body .card img{ height:250px; }
   }
 </style>
 </head>
@@ -562,7 +541,7 @@
 
 <section id="bundles">
   <div class="section-head">
-    <div class="tag">Bundles</div>
+    <div class="tag">Best value</div>
     <h2>Collections</h2>
     <p>Curated bundles at a fixed price — pick your favorites or grab a mystery box.</p>
   </div>
@@ -899,32 +878,6 @@ const FRAMED_ITEMS = [
       { id:"baymax",           name:"Baymax",                   image:"images/hueforge-baymax-1.jpg" },
       { id:"2pac-framed",      name:"2Pac (Framed)",            image:"images/hueforge-2pac-framed-1.jpg" },
       { id:"2pac-alleyez",     name:"2Pac (All Eyez on Me)",    image:"images/hueforge-2pac-alleyez-1.jpg" },
-      { id:"luffy",               name:"Luffy",                       image:"images/hueforge-luffy-1.jpg" },
-      { id:"goku-powering-up",    name:"Goku",                        image:"images/hueforge-goku-powering-up-1.jpg" },
-      { id:"sanji",               name:"Sanji",                       image:"images/hueforge-sanji-1.jpg" },
-      { id:"naruto",              name:"Naruto",                      image:"images/hueforge-naruto-1.jpg" },
-      { id:"anime-selfie",        name:"Goku, Luffy & Naruto",        image:"images/hueforge-anime-selfie-1.jpg" },
-      { id:"zoro",                name:"Zoro",                        image:"images/hueforge-zoro-1.jpg" },
-      { id:"gojo-blue",           name:"Gojo Satoru (Blue)",          image:"images/hueforge-gojo-blue-1.jpg" },
-      { id:"hendrix-guitar",      name:"Jimi Hendrix",                image:"images/hueforge-hendrix-guitar-1.jpg" },
-      { id:"rock-singer-purple",  name:"Rock Singer",                 image:"images/hueforge-rock-singer-purple-1.jpg" },
-      { id:"rock-guitarist-gold", name:"Rock Guitarist",              image:"images/hueforge-rock-guitarist-gold-1.jpg" },
-      { id:"headphones-music",    name:"Headphones & Music Notes",    image:"images/hueforge-headphones-music-1.jpg" },
-      { id:"astronaut-dj",        name:"Astronaut DJ",                image:"images/hueforge-astronaut-dj-1.jpg" },
-      { id:"aang",                name:"Aang (Avatar State)",         image:"images/hueforge-aang-1.jpg" },
-      { id:"gojo-handsign",       name:"Gojo Satoru",                 image:"images/hueforge-gojo-handsign-1.jpg" },
-      { id:"sukuna",              name:"Sukuna",                      image:"images/hueforge-sukuna-1.jpg" },
-      { id:"acdc",                name:"AC/DC",                       image:"images/hueforge-acdc-1.jpg" },
-      { id:"slash",               name:"Slash",                       image:"images/hueforge-slash-1.jpg" },
-      { id:"rocker-purple-splatter", name:"Ozzy Osbourne",            image:"images/hueforge-rocker-purple-splatter-1.jpg" },
-      { id:"kiss",                name:"KISS",                        image:"images/hueforge-kiss-1.jpg" },
-      { id:"joker",               name:"The Joker",                   image:"images/hueforge-joker-1.jpg" },
-      { id:"luffy-gear5",         name:"Luffy (Gear 5)",              image:"images/hueforge-luffy-gear5-1.jpg" },
-      { id:"pokemon",             name:"Pok\u00e9mon",                image:"images/hueforge-pokemon-1.jpg" },
-      { id:"dolly-parton",        name:"Dolly Parton",                image:"images/hueforge-dolly-parton-1.jpg" },
-      { id:"spiderman",           name:"Spider-Man",                  image:"images/hueforge-spiderman-1.jpg" },
-      { id:"goku-super-saiyan",   name:"Goku (Super Saiyan)",         image:"images/hueforge-goku-super-saiyan-1.jpg" },
-      { id:"one-piece-crew",      name:"One Piece Crew",              image:"images/hueforge-one-piece-crew-1.jpg" },
     ] },
 ];
 
@@ -947,13 +900,6 @@ const VINYL_ITEMS = [
 /* =========================================================
    Fixed single-price items — no color/size choice
    ========================================================= */
-// Launch-safe designs only: no real people, no licensed characters
-const SAFE_DESIGNS = new Set(["rock-singer-purple","rock-guitarist-gold","headphones-music","astronaut-dj","spiral"]);
-[...FRAMED_ITEMS, ...VINYL_ITEMS].forEach(p => {
-  p.designs = p.designs.filter(d => SAFE_DESIGNS.has(d.id));
-  p.images = p.designs.map(d => d.image);
-});
-
 const SIMPLE_ITEMS = [
   { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:7.99,
     desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
@@ -1113,9 +1059,6 @@ let finishSelections = {};
 let materialSelections = {};
 // productId -> chosen design id for FRAMED_ITEMS (e.g. "tmnt"), null until picked
 let designSelections = {};
-// productId -> which photo index is currently showing in the detail modal's gallery
-let galleryIndex = {};
-let galleryTimer = null;
 
 function getColorMax(id){
   const input = document.querySelector(`input[name="variant-${id}"]:checked`);
@@ -1368,59 +1311,6 @@ function renderProducts(){
 // size/frame/design pickers, note field, qty, add-to-cart) that used to
 // render inline on every grid card. Now it only exists once, inside the
 // detail modal, for whichever single product is currently open.
-// For products with more than one photo, renders a full gallery (arrows +
-// dots + autoplay) instead of a single flat <img>. Only used for plain
-// photo-based types — framed/vinyl items already "cycle" pictures via
-// their design picker, so a second gallery on top would be redundant.
-function detailImageHtml(p){
-  const images = p.images.length ? p.images : [PLACEHOLDER_IMG];
-  if(images.length <= 1){
-    return `<img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">`;
-  }
-  return `
-    <div class="detail-gallery">
-      <img id="img-${p.id}" src="${images[0]}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
-      <button type="button" class="gallery-nav prev" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',-1)" aria-label="Previous photo">&#8249;</button>
-      <button type="button" class="gallery-nav next" onclick="event.stopPropagation(); shiftGalleryImage('${p.id}',1)" aria-label="Next photo">&#8250;</button>
-      <div class="gallery-dots">
-        ${images.map((_,i) => `<span class="dot${i===0?" active":""}" data-idx="${i}" onclick="event.stopPropagation(); setGalleryImage('${p.id}',${i})"></span>`).join("")}
-      </div>
-    </div>`;
-}
-
-function updateGalleryImage(id){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p) return;
-  const idx = galleryIndex[id] || 0;
-  const imgEl = document.getElementById(`img-${id}`);
-  if(imgEl) imgEl.src = p.images[idx];
-  document.querySelectorAll("#productDetailBody .dot").forEach((dot,i)=>{
-    dot.classList.toggle("active", i === idx);
-  });
-}
-
-function shiftGalleryImage(id, dir){
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  const len = p.images.length;
-  galleryIndex[id] = ((galleryIndex[id] || 0) + dir + len) % len;
-  updateGalleryImage(id);
-}
-
-function setGalleryImage(id, idx){
-  galleryIndex[id] = idx;
-  updateGalleryImage(id);
-  clearInterval(galleryTimer); // manual interaction takes over — stop auto-advancing
-}
-
-function startGalleryAutoplay(id){
-  clearInterval(galleryTimer);
-  const p = ALL_ITEMS.find(x=>x.id===id);
-  if(!p || !p.images || p.images.length <= 1) return;
-  if(p.type === "framed" || p.type === "vinyl") return; // design picker controls the photo, no autoplay
-  galleryTimer = setInterval(()=> shiftGalleryImage(id, 1), 3500);
-}
-
 function productDetailInnerHtml(p){
   const img = p.images[0] || PLACEHOLDER_IMG;
 
@@ -1447,7 +1337,7 @@ function productDetailInnerHtml(p){
         </div>`;
     return `
     <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
+      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
       <div class="card-body">
         <h3>${p.name}</h3>
         ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
@@ -1467,7 +1357,7 @@ function productDetailInnerHtml(p){
     const initialPrice = p.sizes.small.single;
     return `
     <div class="card" data-id="${p.id}">
-      ${detailImageHtml(p)}
+      <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
       <div class="card-body">
         <h3>${p.name}</h3>
         ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
@@ -1568,7 +1458,7 @@ function productDetailInnerHtml(p){
   // type === "simple"
   return `
   <div class="card" data-id="${p.id}">
-    ${detailImageHtml(p)}
+    <img src="${img}" alt="${p.name}" loading="lazy" onclick="openLightbox(this)">
     <div class="card-body">
       <h3>${p.name}</h3>
       ${p.desc ? `<p class="item-desc">${p.desc}</p>` : ""}
@@ -1599,15 +1489,11 @@ function openProductDetail(id){
     designSelections[id] = null;
   }
 
-  galleryIndex[id] = 0;
-  startGalleryAutoplay(id);
-
   document.getElementById("productDetailOverlay").classList.add("open");
   document.getElementById("productDetailModal").classList.add("open");
 }
 
 function closeProductDetail(){
-  clearInterval(galleryTimer);
   document.getElementById("productDetailOverlay").classList.remove("open");
   document.getElementById("productDetailModal").classList.remove("open");
 }

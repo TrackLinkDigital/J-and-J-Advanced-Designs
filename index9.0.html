@@ -145,14 +145,14 @@
     transition:transform .25s ease, box-shadow .25s ease;
   }
   .mini-card:hover{ transform:translateY(-4px); box-shadow:0 14px 28px rgba(20,20,20,.09); }
-  .mini-card img{ width:100%; height:190px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
+  .mini-card img{ width:100%; height:170px; object-fit:cover; display:block; background:#e5e3db; transition:transform .45s ease; }
   .mini-card:hover img{ transform:scale(1.05); }
   .mini-card-body{ padding:12px 14px 14px; }
   .mini-card-body h3{ font-size:.98rem; margin:0 0 4px; }
   .mini-card-price{ color:var(--teal-deep); font-weight:600; font-size:.92rem; }
   .mini-card-badge{ color:var(--ink-soft); font-size:.72rem; margin-top:3px; line-height:1.3; }
   @media (max-width:520px){
-    .mini-card img{ height:135px; }
+    .mini-card img{ height:120px; }
     .mini-card-body{ padding:9px 10px 11px; }
     .mini-card-body h3{ font-size:.82rem; }
     .mini-card-price{ font-size:.8rem; }
@@ -562,7 +562,7 @@
 
 <section id="bundles">
   <div class="section-head">
-    <div class="tag">Bundles</div>
+    <div class="tag">Best value</div>
     <h2>Collections</h2>
     <p>Curated bundles at a fixed price — pick your favorites or grab a mystery box.</p>
   </div>
@@ -899,32 +899,6 @@ const FRAMED_ITEMS = [
       { id:"baymax",           name:"Baymax",                   image:"images/hueforge-baymax-1.jpg" },
       { id:"2pac-framed",      name:"2Pac (Framed)",            image:"images/hueforge-2pac-framed-1.jpg" },
       { id:"2pac-alleyez",     name:"2Pac (All Eyez on Me)",    image:"images/hueforge-2pac-alleyez-1.jpg" },
-      { id:"luffy",               name:"Luffy",                       image:"images/hueforge-luffy-1.jpg" },
-      { id:"goku-powering-up",    name:"Goku",                        image:"images/hueforge-goku-powering-up-1.jpg" },
-      { id:"sanji",               name:"Sanji",                       image:"images/hueforge-sanji-1.jpg" },
-      { id:"naruto",              name:"Naruto",                      image:"images/hueforge-naruto-1.jpg" },
-      { id:"anime-selfie",        name:"Goku, Luffy & Naruto",        image:"images/hueforge-anime-selfie-1.jpg" },
-      { id:"zoro",                name:"Zoro",                        image:"images/hueforge-zoro-1.jpg" },
-      { id:"gojo-blue",           name:"Gojo Satoru (Blue)",          image:"images/hueforge-gojo-blue-1.jpg" },
-      { id:"hendrix-guitar",      name:"Jimi Hendrix",                image:"images/hueforge-hendrix-guitar-1.jpg" },
-      { id:"rock-singer-purple",  name:"Rock Singer",                 image:"images/hueforge-rock-singer-purple-1.jpg" },
-      { id:"rock-guitarist-gold", name:"Rock Guitarist",              image:"images/hueforge-rock-guitarist-gold-1.jpg" },
-      { id:"headphones-music",    name:"Headphones & Music Notes",    image:"images/hueforge-headphones-music-1.jpg" },
-      { id:"astronaut-dj",        name:"Astronaut DJ",                image:"images/hueforge-astronaut-dj-1.jpg" },
-      { id:"aang",                name:"Aang (Avatar State)",         image:"images/hueforge-aang-1.jpg" },
-      { id:"gojo-handsign",       name:"Gojo Satoru",                 image:"images/hueforge-gojo-handsign-1.jpg" },
-      { id:"sukuna",              name:"Sukuna",                      image:"images/hueforge-sukuna-1.jpg" },
-      { id:"acdc",                name:"AC/DC",                       image:"images/hueforge-acdc-1.jpg" },
-      { id:"slash",               name:"Slash",                       image:"images/hueforge-slash-1.jpg" },
-      { id:"rocker-purple-splatter", name:"Ozzy Osbourne",            image:"images/hueforge-rocker-purple-splatter-1.jpg" },
-      { id:"kiss",                name:"KISS",                        image:"images/hueforge-kiss-1.jpg" },
-      { id:"joker",               name:"The Joker",                   image:"images/hueforge-joker-1.jpg" },
-      { id:"luffy-gear5",         name:"Luffy (Gear 5)",              image:"images/hueforge-luffy-gear5-1.jpg" },
-      { id:"pokemon",             name:"Pok\u00e9mon",                image:"images/hueforge-pokemon-1.jpg" },
-      { id:"dolly-parton",        name:"Dolly Parton",                image:"images/hueforge-dolly-parton-1.jpg" },
-      { id:"spiderman",           name:"Spider-Man",                  image:"images/hueforge-spiderman-1.jpg" },
-      { id:"goku-super-saiyan",   name:"Goku (Super Saiyan)",         image:"images/hueforge-goku-super-saiyan-1.jpg" },
-      { id:"one-piece-crew",      name:"One Piece Crew",              image:"images/hueforge-one-piece-crew-1.jpg" },
     ] },
 ];
 
@@ -947,13 +921,6 @@ const VINYL_ITEMS = [
 /* =========================================================
    Fixed single-price items — no color/size choice
    ========================================================= */
-// Launch-safe designs only: no real people, no licensed characters
-const SAFE_DESIGNS = new Set(["rock-singer-purple","rock-guitarist-gold","headphones-music","astronaut-dj","spiral"]);
-[...FRAMED_ITEMS, ...VINYL_ITEMS].forEach(p => {
-  p.designs = p.designs.filter(d => SAFE_DESIGNS.has(d.id));
-  p.images = p.designs.map(d => d.image);
-});
-
 const SIMPLE_ITEMS = [
   { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:7.99,
     desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
@@ -1417,7 +1384,6 @@ function startGalleryAutoplay(id){
   clearInterval(galleryTimer);
   const p = ALL_ITEMS.find(x=>x.id===id);
   if(!p || !p.images || p.images.length <= 1) return;
-  if(p.type === "framed" || p.type === "vinyl") return; // design picker controls the photo, no autoplay
   galleryTimer = setInterval(()=> shiftGalleryImage(id, 1), 3500);
 }
 

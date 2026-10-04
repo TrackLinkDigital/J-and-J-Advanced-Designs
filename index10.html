@@ -562,7 +562,7 @@
 
 <section id="bundles">
   <div class="section-head">
-    <div class="tag">Bundles</div>
+    <div class="tag">Best value</div>
     <h2>Collections</h2>
     <p>Curated bundles at a fixed price — pick your favorites or grab a mystery box.</p>
   </div>
@@ -947,13 +947,6 @@ const VINYL_ITEMS = [
 /* =========================================================
    Fixed single-price items — no color/size choice
    ========================================================= */
-// Launch-safe designs only: no real people, no licensed characters
-const SAFE_DESIGNS = new Set(["rock-singer-purple","rock-guitarist-gold","headphones-music","astronaut-dj","spiral"]);
-[...FRAMED_ITEMS, ...VINYL_ITEMS].forEach(p => {
-  p.designs = p.designs.filter(d => SAFE_DESIGNS.has(d.id));
-  p.images = p.designs.map(d => d.image);
-});
-
 const SIMPLE_ITEMS = [
   { id:"whack-a-mole", name:"Whack-A-Mole", category:"Toys & Games", price:7.99,
     desc:"A tiny desktop whack-a-mole for quick bursts of fun.", blurb:"",
@@ -1417,7 +1410,6 @@ function startGalleryAutoplay(id){
   clearInterval(galleryTimer);
   const p = ALL_ITEMS.find(x=>x.id===id);
   if(!p || !p.images || p.images.length <= 1) return;
-  if(p.type === "framed" || p.type === "vinyl") return; // design picker controls the photo, no autoplay
   galleryTimer = setInterval(()=> shiftGalleryImage(id, 1), 3500);
 }
 
